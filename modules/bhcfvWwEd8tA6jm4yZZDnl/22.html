@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- local runtime script disabled -->
+<!-- local runtime script disabled -->
+<meta charset="UTF-8">
+<meta content="width=device-width,initial-scale=1" name="viewport">
+<title>实验实操手册 · 华为ICT大赛备赛</title>
+<style>
+  :root{--bg:#0a0f1a; --panel:#111c30; --panel2:#15223a; --ink:#dbe7f5; --ink2:#8fa3bf; --ink3:#6b7c96; --line:#1e2f4d; --brand:#2ee6a8; --brand2:#5aa7ff; --ok:#2ee6a8; --warn:#ffc555; --bad:#ff6b7a; --chip:#15223a; --code:#0b1017; --codeink:#d9e2ec; --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px -14px rgba(0,0,0,.7); --r:14px;}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px 90px}
+  .top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);
+    backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
+  .top .in{max-width:1000px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800}
+  .logo i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#7df5cd);
+    display:grid;place-items:center;color:#08131f;font-style:normal;font-size:13px;font-weight:900}
+  .navlinks{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .navlinks a{text-decoration:none;color:var(--ink2);font-size:13.5px;font-weight:600;padding:6px 11px;border-radius:9px}
+  .navlinks a:hover{background:var(--chip);color:var(--ink)}
+  .navlinks a.on{background:var(--ink);color:var(--bg)}
+  .hero{padding:34px 0 6px}
+  h1{font-size:30px;margin:12px 0 8px;letter-spacing:-.5px;line-height:1.25}
+  .kicker{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--brand);
+    background:color-mix(in srgb,var(--brand) 10%,transparent);padding:5px 11px;border-radius:99px}
+  .sub{color:var(--ink2);margin:0;font-size:14.5px;max-width:780px}
+  section{margin-top:36px;scroll-margin-top:70px}
+  h2{font-size:19px;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+  h2 .dot{width:7px;height:7px;border-radius:50%;background:var(--brand);flex:none}
+  .hint{color:var(--ink3);font-size:13.5px;margin:0 0 16px}
+  /* prep */
+  .prep{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .pcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;box-shadow:var(--shadow)}
+  .pcard b{display:block;font-size:14.5px;margin-bottom:5px}
+  .pcard p{margin:0 0 9px;font-size:13px;color:var(--ink2)}
+  .pcard a{font-size:13px;font-weight:700;color:var(--brand2);text-decoration:none;word-break:break-all}
+  .pcard a:hover{text-decoration:underline}
+  /* lab card */
+  .lab{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+    margin-top:13px;overflow:hidden}
+  .lab-h{display:flex;gap:12px;align-items:center;padding:15px 17px;cursor:pointer;user-select:none}
+  .num{flex:none;width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--brand),#7df5cd);
+    color:#08131f;display:grid;place-items:center;font-weight:900;font-size:13px}
+  .lab.sw .num{background:linear-gradient(135deg,#2ee6a8,#2ee6a8)}
+  .lab-h b{font-size:15.5px;letter-spacing:-.2px;flex:1}
+  .lv{font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:7px;background:var(--chip);color:var(--ink2);white-space:nowrap}
+  .lv.p1{background:color-mix(in srgb,var(--brand) 12%,transparent);color:var(--brand)}
+  .lv.p2{background:color-mix(in srgb,var(--brand2) 12%,transparent);color:var(--brand2)}
+  .lv.p3{background:color-mix(in srgb,var(--ok) 14%,transparent);color:var(--ok)}
+  .chev{color:var(--ink3);font-size:13px;transition:.2s}
+  .lab.open .chev{transform:rotate(90deg)}
+  .lab-b{display:none;padding:0 17px 17px;border-top:1px solid var(--line)}
+  .lab.open .lab-b{display:block}
+  .lab-b h4{font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin:16px 0 7px}
+  .lab-b ul{margin:0;padding-left:19px;font-size:14px;color:var(--ink2)}
+  .lab-b li{margin:3px 0}
+  .lab-b li b{color:var(--ink)}
+  /* code */
+  .codewrap{position:relative;margin-top:8px}
+  pre{background:var(--code);color:var(--codeink);border-radius:11px;padding:14px 15px;overflow:auto;
+    font:12.8px/1.7 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace;margin:0;max-height:420px}
+  pre .c{color:#8fa3bf}
+  pre .k{color:#ff9a8b}
+  .copy{position:absolute;top:9px;right:9px;border:0;background:rgba(255,255,255,.1);color:#dbe7f5;font:600 12px/1 inherit;
+    padding:6px 10px;border-radius:8px;cursor:pointer}
+  .copy:hover{background:rgba(255,255,255,.2)}
+  .ok-t{font-size:13.5px;color:var(--ink2);background:color-mix(in srgb,var(--ok) 8%,transparent);
+    border-left:3px solid var(--ok);padding:10px 13px;border-radius:9px;margin-top:10px}
+  .ok-t b{color:var(--ink)}
+  .warn-t{font-size:13.5px;color:var(--ink2);background:color-mix(in srgb,var(--warn) 9%,transparent);
+    border-left:3px solid var(--warn);padding:10px 13px;border-radius:9px;margin-top:10px}
+  footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink3);font-size:12.5px}
+  @media(max-width:640px){ h1{font-size:23px} .wrap{padding:0 14px 70px} pre{font-size:12px} }
+  :root{color-scheme:dark}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#22314e;border-radius:99px}
+  ::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="kicker">● 实验实操手册</span>
+    <h1>照着敲一遍，比看十遍强</h1>
+    <p class="sub">
+      国赛和省赛复赛考的是 8 小时综合实验，纯理论背得多不等于做得出来。这里把两个赛道的高频实验按
+      「目标 → 拓扑要点 → 关键命令 → 验收标准」拆开，命令可直接复制。建议顺序做完，每做完一个自己
+      <b>display</b> 一遍验证结果。
+    </p>
+  </div>
+
+  <!-- 环境准备 -->
+  <section id="prep">
+    <h2><span class="dot"></span>第 0 步 · 环境准备</h2>
+    <p class="hint">先把工具装齐，后面所有实验都跑在这套环境里。</p>
+    <div class="prep">
+      <div class="pcard">
+        <b>eNSP（必装）</b>
+        <p>华为官方企业网络仿真平台，模拟 AR 路由器 / S 系列交换机 / USG 防火墙 / WLAN 设备。装完装 VirtualBox，再在「工具 → 设备包管理」里下载 AR、USG 等设备包，否则设备起不来。</p>
+        <a href="https://support.huawei.com/enterprise/zh/tool/ensp" rel="noopener" target="_blank">support.huawei.com → 搜 eNSP ↗</a>
+      </div>
+      <div class="pcard">
+        <b>虚拟机（必装）</b>
+        <p>基础软件赛道要真机环境。VMware Workstation 或 VirtualBox + openEuler 22.03 LTS 镜像，建议 4 核 8G 起。</p>
+        <a href="https://www.openeuler.org/zh/download/" rel="noopener" target="_blank">openEuler 镜像下载 ↗</a>
+      </div>
+      <div class="pcard">
+        <b>抓包工具</b>
+        <p>Wireshark，eNSP 可直连调用。用来抓 OSPF 报文、TCP 三次握手、CAPWAP、VXLAN 封装，理解协议最快的方式。</p>
+        <a href="https://www.wireshark.org/download.html" rel="noopener" target="_blank">wireshark.org ↗</a>
+      </div>
+      <div class="pcard">
+        <b>官方文档（边做边查）</b>
+        <p>openEuler 与 openGauss 的官方文档，是基础软件赛道最权威的参考。</p>
+        <a href="https://docs.openeuler.org" rel="noopener" target="_blank">docs.openeuler.org ↗</a><br>
+        <a href="https://docs.opengauss.org" rel="noopener" target="_blank">docs.opengauss.org ↗</a>
+      </div>
+    </div>
+    <div class="warn-t">
+      <b>eNSP 安装三个坑：</b>① 安装路径<b>绝不能有中文</b>，否则设备无法启动；② 安装包右键<b>以管理员身份运行</b>，装完在 Windows 防火墙里放行 eNSP 相关进程；③ 路由器起不来时，用「工具 → 注册设备」重新注册 AR_Base。
+    </div>
+  </section>
+
+  <!-- 网络赛道 -->
+  <section id="net">
+    <h2><span class="dot"></span>网络赛道 · 14 个必做实验</h2>
+    <p class="hint">按顺序做。标 <span class="lv p1">核心</span> 的是省赛必考，<span class="lv p2">进阶</span> 是国赛难度，<span class="lv p3">拓展</span> 用于拉开分差。</p>
+    <div id="lab-net"></div>
+  </section>
+
+  <!-- 基础软件 -->
+  <section id="sw">
+    <h2><span class="dot"></span>基础软件赛道 · 8 个必做实验</h2>
+    <p class="hint">要在 vmware 里起 openEuler 虚机做，别只看视频。</p>
+    <div id="lab-sw"></div>
+  </section>
+
+  <footer>
+    命令基于华为 VRP / openEuler 22.03 LTS / openGauss 5.x 通用写法，不同版本细节可能略有差异，
+    以官方文档为准。实验拓扑建议自己画一遍再敲，比照抄理解深得多。
+  </footer>
+</div>
+
+<script>
+/* 板块目录（所有页面的导航兜底入口，永远可达） */
+window.__HUB_FOLDER__ = 'https://workbuddy.link/p/ttB15OwOZjn8H00RjliKGG';
+
+/* ========== 实验数据 ========== */
+window.__LABS = {
+net: [
+  {n:1,t:'VLAN 划分与 Trunk 互通',lv:1,
+   goal:'让两台交换机下不同 VLAN 的主机二层隔离，同 VLAN 跨交换机互通；搞清 Access / Trunk / Hybrid 的标签处理差异。',
+   pts:['SW1、SW2 各接入两台 PC，分属 VLAN 10 / 20','两交换机互联口配 Trunk 并放行 VLAN 10、20','接入 PC 的端口用 Access'],
+   cmd:`&lt;Huawei&gt; system-view
+[Huawei] sysname SW1
+[SW1] vlan batch 10 20
+[SW1] interface GigabitEthernet0/0/1
+[SW1-G0/0/1] port link-type access
+[SW1-G0/0/1] port default vlan 10
+[SW1] interface GigabitEthernet0/0/2
+[SW1-G0/0/2] port link-type access
+[SW1-G0/0/2] port default vlan 20
+[SW1] interface GigabitEthernet0/0/24
+[SW1-G0/0/24] port link-type trunk
+[SW1-G0/0/24] port trunk allow-pass vlan 10 20
+<span class="c"># 查看</span>
+[SW1] display vlan
+[SW1] display port vlan`,
+   ok:'同 VLAN 的 PC 能 ping 通，跨 VLAN 不通。<b>display port vlan</b> 应看到 Access 口的 PVID 是所属 VLAN，Trunk 口 PVID 默认 1。'},
+  {n:2,t:'VLAN 间通信：三层交换机 + VRRP 网关冗余',lv:1,
+   goal:'用三层交换机做 VLAN 网关，并配合 VRRP 实现网关主备，理解 VLANIF 与 PVID 的配合。',
+   pts:['核心交换机上创建 VLANIF 10 / 20，配置网关地址','双核心之间跑 VRRP，虚拟 IP 做 PC 网关','主备优先级与抢占延时'],
+   cmd:`[SW1] interface Vlanif10
+[SW1-Vlanif10] ip address 192.168.10.2 24
+[SW1-Vlanif10] vrrp vrid 10 virtual-ip 192.168.10.1
+[SW1-Vlanif10] vrrp vrid 10 priority 120
+[SW1-Vlanif10] vrrp vrid 10 preempt-mode timer delay 20
+[SW1] interface Vlanif20
+[SW1-Vlanif20] ip address 192.168.20.2 24
+[SW1-Vlanif20] vrrp vrid 20 virtual-ip 192.168.20.1
+[SW1-Vlanif20] vrrp vrid 20 priority 100
+<span class="c"># SW2 上：vrid 10 优先级 100、vrid 20 优先级 120，形成负载分担</span>
+<span class="c"># 查看</span>
+[SW1] display vrrp brief
+[SW1] display vrrp verbose`,
+   ok:'<b>display vrrp brief</b> 中 vrid 10 该设备为 Master、vrid 20 为 Backup；断开主设备上行链路后能自动切换到备用设备，PC 网关地址不变。'},
+  {n:3,t:'STP / RSTP / MSTP 防环与负载分担',lv:1,
+   goal:'三层交换机环型组网消除二层环路；再用 MSTP 多实例让不同 VLAN 走不同路径。',
+   pts:['创建环型拓扑（4 台交换机）','配 MSTP 区域，VLAN 10 映射实例 1、VLAN 20 映射实例 2','在两台核心上分别做实例 1 / 实例 2 的根桥'],
+   cmd:`[SW1] stp mode mstp
+[SW1] stp region-configuration
+[SW1-mst-region] region-name RG-ICT
+[SW1-mst-region] revision-level 1
+[SW1-mst-region] instance 1 vlan 10
+[SW1-mst-region] instance 2 vlan 20
+[SW1-mst-region] active region-configuration
+[SW1] stp instance 1 root primary
+[SW1] stp instance 2 root secondary
+<span class="c"># SW2 上反过来：instance 1 root secondary / instance 2 root primary</span>
+<span class="c"># 查看</span>
+[SW1] display stp brief
+[SW1] display stp region-configuration`,
+   ok:'两个实例的根桥不同，<b>display stp brief</b> 里被阻塞的端口在实例间分开，说明实现了负载分担。注意：区域内所有交换机的域名、修订级别、VLAN 映射必须完全一致。'},
+  {n:4,t:'Eth-Trunk 链路聚合（LACP）',lv:1,
+   goal:'把多条物理链路捆绑成一条逻辑链路，增加带宽并提高可靠性；观察单条链路断开时的无损切换。',
+   pts:['两台交换机之间连 2-3 条线','用 LACP 静态模式组成 Eth-Trunk','Trunk 口放行所需 VLAN'],
+   cmd:`[SW1] interface Eth-Trunk1
+[SW1-Eth-Trunk1] mode lacp-static
+[SW1-Eth-Trunk1] port link-type trunk
+[SW1-Eth-Trunk1] port trunk allow-pass vlan 10 20
+[SW1-Eth-Trunk1] quit
+[SW1] interface GigabitEthernet0/0/1
+[SW1-G0/0/1] eth-trunk 1
+[SW1] interface GigabitEthernet0/0/2
+[SW1-G0/0/2] eth-trunk 1
+<span class="c"># 批量加成员口：</span>
+[SW1] interface Eth-Trunk1
+[SW1-Eth-Trunk1] trunkport GigabitEthernet 0/0/1 to 0/0/2
+<span class="c"># 查看</span>
+[SW1] display eth-trunk 1`,
+   ok:'<b>display eth-trunk 1</b> 中两个成员口都是 Selected；断开其中一条，业务不中断（长 ping 不丢包）。'},
+  {n:5,t:'静态路由 / 浮动路由 / 策略路由入门',lv:1,
+   goal:'掌握路由表匹配最长掩码原则、浮动路由做备份、以及如何用 display 排错。',
+   pts:['两台路由器通过两条链路相连','主链路配低优先级静态路由，备份链路配高优先级（值大）','配合 BFD 或 NQA 实现快速切换'],
+   cmd:`[AR1] ip route-static 192.168.2.0 24 10.0.0.2
+<span class="c"># 浮动路由：优先级默认 60，改大做备份</span>
+[AR1] ip route-static 192.168.2.0 24 10.0.1.2 preference 100
+<span class="c"># 只作为备份下发：</span>
+[AR1] ip route-static 192.168.2.0 24 10.0.1.2 preference 100
+<span class="c"># 查看</span>
+[AR1] display ip routing-table
+[AR1] display ip routing-table 192.168.2.0
+[AR1] display ip routing-table protocol static`,
+   ok:'<b>display ip routing-table</b> 里主路由在表内、备份路由不显示（只有主路由失效才激活）。断开主链路后备份路由自动出现。'},
+  {n:6,t:'OSPF 单区域 → 多区域 → 汇总 → 特殊区域',lv:1,
+   goal:'OSPF 是网络赛道最核心的考点。从单区域起步，逐步加多区域、ABR 汇总、Stub/NSSA。',
+   pts:['先做单区域，把邻居建立起来','划分 Area 0 / Area 1，ABR 上做区域间汇总','引入外部路由做 ASBR 汇总，再配 Stub / NSSA'],
+   cmd:`[AR1] ospf 1 router-id 1.1.1.1
+[AR1-ospf-1] area 0
+[AR1-ospf-1-area-0.0.0.0] network 10.0.0.0 0.0.0.255
+[AR1-ospf-1-area-0.0.0.0] network 1.1.1.1 0.0.0.0
+<span class="c"># ABR 区域间汇总</span>
+[ABR] ospf 1
+[ABR-ospf-1] area 1
+[ABR-ospf-1-area-0.0.0.1] abr-summary 10.1.0.0 255.255.0.0
+<span class="c"># ASBR 外部路由汇总 + 引入直连/静态</span>
+[ASBR-ospf-1] asbr-summary 172.16.0.0 255.255.0.0
+[ASBR-ospf-1] import-route direct
+<span class="c"># Stub / NSSA</span>
+[ABR-ospf-1-area-0.0.0.1] stub
+[ABR-ospf-1-area-0.0.0.2] nssa
+<span class="c"># 认证（区域级）</span>
+[AR1-ospf-1-area-0.0.0.0] authentication-mode md5 1 cipher Huawei@123
+<span class="c"># 查看（排错三板斧）</span>
+[AR1] display ospf peer brief
+[AR1] display ospf interface GigabitEthernet0/0/0
+[AR1] display ospf lsdb
+[AR1] display ospf routing`,
+   ok:'<b>display ospf peer brief</b> 全部为 Full；汇总后在邻居的 LSDB 里只看到聚合后的 Type3 LSA；Stub 区域内能看到一条默认路由。'},
+  {n:7,t:'BGP 邻居建立与选路控制',lv:2,
+   goal:'建立 IBGP / EBGP 邻居，理解 next-hop-local 的必要性，练 AS_PATH、Local_Pref、MED 三条控制手段。',
+   pts:['AS 100 内两台路由器建 IBGP（建议用 Loopback 建邻居）','与 AS 200 建 EBGP，配置 next-hop-local','分别用 Local_Pref / MED / AS_PATH 控制进出向选路'],
+   cmd:`[AR1] bgp 100
+[AR1-bgp] router-id 1.1.1.1
+[AR1-bgp] peer 3.3.3.3 as-number 100
+[AR1-bgp] peer 3.3.3.3 connect-interface LoopBack0
+[AR1-bgp] peer 3.3.3.3 next-hop-local
+[AR1-bgp] peer 10.0.0.2 as-number 200
+[AR1-bgp] network 1.1.1.1 32
+<span class="c"># 控制出向：Local_Pref（越大越优）</span>
+[AR1-bgp] default local-preference 200
+<span class="c"># 控制入向：MED（越小越优）</span>
+[AR1-bgp] peer 10.0.0.2 route-policy MED-IN import
+[AR1] route-policy MED-IN permit node 10
+[AR1-route-policy] apply cost 100
+<span class="c"># 过滤 AS_PATH</span>
+[AR1] ip as-path-filter 1 deny _300_
+[AR1] ip as-path-filter 1 permit .*
+[AR1] route-policy AS-IN permit node 10
+[AR1-route-policy] if-match as-path-filter 1
+<span class="c"># 查看</span>
+[AR1] display bgp peer
+[AR1] display bgp routing-table 1.1.1.1`,
+   ok:'IBGP 邻居 Established；对端能学到 1.1.1.1/32 且下一跳可达（next-hop-local 生效）；改 Local_Pref / MED 后再次 display bgp routing-table 能看到最优路径变化。'},
+  {n:8,t:'ACL + NAT（Easy-IP / NAT Server）',lv:1,
+   goal:'内网访问外网做源 NAT，外网访问内网服务器做 NAT Server；同时用 ACL 限制哪些网段能上网。',
+   pts:['私网 PC 经边界路由器出公网','用基本 ACL 匹配源网段，配 Easy-IP 复用出接口地址','发布内网 Web 服务器，配 NAT Server'],
+   cmd:`[AR1] acl 2000
+[AR1-acl-basic-2000] rule 5 permit source 192.168.1.0 0.0.0.255
+[AR1-acl-basic-2000] rule 10 deny source any
+[AR1] interface GigabitEthernet0/0/1
+[AR1-G0/0/1] nat outbound 2000
+<span class="c"># NAT Server：公网 200.1.1.10:80 → 内网 192.168.1.100:80</span>
+[AR1-G0/0/1] nat server protocol tcp global 200.1.1.10 80 inside 192.168.1.100 80
+<span class="c"># 静态 NAT（一对一）</span>
+[AR1-G0/0/1] nat static global 200.1.1.11 inside 192.168.1.101
+<span class="c"># 查看</span>
+[AR1] display nat outbound
+[AR1] display nat server
+[AR1] display nat session all`,
+   ok:'内网 PC 能 ping 通外网；外网能访问 200.1.1.10:80；<b>display nat session all</b> 能看到转换表项。'},
+  {n:9,t:'防火墙安全区域与安全策略',lv:1,
+   goal:'搞清四个缺省区域的优先级关系，用安全策略精确放行流量，体会「拒绝所有、按需放行」。',
+   pts:['划分 Trust / DMZ / Untrust 三个区域并绑定接口','配置 Trust → Untrust 允许上网','配置 Untrust → DMZ 只允许访问服务器的 80 端口'],
+   cmd:`&lt;USG&gt; system-view
+[USG] interface GigabitEthernet1/0/0
+[USG-G1/0/0] ip address 192.168.1.1 24
+[USG-G1/0/0] quit
+[USG] firewall zone trust
+[USG-zone-trust] add interface GigabitEthernet1/0/0
+[USG] firewall zone dmz
+[USG-zone-dmz] add interface GigabitEthernet1/0/2
+[USG] security-policy
+[USG-policy-security] rule name trust_to_untrust
+[USG-policy-security-rule-trust_to_untrust] source-zone trust
+[USG-policy-security-rule-trust_to_untrust] destination-zone untrust
+[USG-policy-security-rule-trust_to_untrust] action permit
+[USG-policy-security] rule name untrust_to_dmz_web
+[USG-policy-security-rule-untrust_to_dmz_web] source-zone untrust
+[USG-policy-security-rule-untrust_to_dmz_web] destination-zone dmz
+[USG-policy-security-rule-untrust_to_dmz_web] destination-address 192.168.3.100 32
+[USG-policy-security-rule-untrust_to_dmz_web] service http
+[USG-policy-security-rule-untrust_to_dmz_web] action permit
+<span class="c"># 查看</span>
+[USG] display zone
+[USG] display security-policy rule all
+[USG] display firewall session table`,
+   ok:'未被策略允许的流量被丢弃（如 Untrust 直接访问 Trust 不通）；80 端口能通。<b>display firewall session table</b> 能看到会话建立。'},
+  {n:10,t:'防火墙双机热备（VGMP + HRP）',lv:2,
+   goal:'两台防火墙做热备，主机故障时业务不中断；理解 HRP 同步配置与会话表的作用。',
+   pts:['两台 FW 之间跑心跳链路','配 VGMP 管理组与 HRP 主备','启用会话表与配置同步，验证切换不中断业务'],
+   cmd:`[FW1] hrp interface GigabitEthernet1/0/3 remote 10.10.10.2
+[FW1] hrp enable
+<span class="c"># 双机热备需配合 VRRP 或静态路由，安全策略要放行 HRP 心跳</span>
+[FW1] hrp auto-sync config
+[FW1] hrp auto-sync connection-status
+<span class="c"># 查看</span>
+[FW1] display hrp state
+[FW1] display hrp configuration
+[FW1] display hrp session table`,
+   ok:'<b>display hrp state</b> 显示 Active/Standby；断开主设备（或 down 上行口）后持续 ping 只有极少量丢包，业务自动切换。'},
+  {n:11,t:'IPsec VPN 站点到站点',lv:2,
+   goal:'两个站点通过公网建立 IPsec 隧道，实现内网互通；掌握感兴趣流、IKE、IPsec SA 的关系。',
+   pts:['两侧内网通过 ACL 定义感兴趣流','配 IKE 阶段一（预共享密钥）+ 阶段二 proposal','在出接口应用 IPsec policy，验证隧道建立'],
+   cmd:`[AR1] acl 3000
+[AR1-acl-adv-3000] rule permit ip source 192.168.1.0 0.0.0.255 destination 192.168.2.0 0.0.0.255
+[AR1] ike proposal 10
+[AR1-ike-proposal-10] encryption-algorithm aes-cbc-128
+[AR1-ike-proposal-10] authentication-algorithm sha2-256
+[AR1] ike peer peer1 v2
+[AR1-ike-peer-peer1] pre-shared-key cipher Huawei@123
+[AR1-ike-peer-peer1] remote-address 200.1.1.2
+[AR1] ipsec proposal p1
+[AR1-ipsec-proposal-p1] esp encryption-algorithm aes-128
+[AR1-ipsec-proposal-p1] esp authentication-algorithm sha2-256
+[AR1] ipsec policy map1 10 isakmp
+[AR1-ipsec-policy-map1-10] security acl 3000
+[AR1-ipsec-policy-map1-10] ike-peer peer1
+[AR1-ipsec-policy-map1-10] proposal p1
+[AR1] interface GigabitEthernet0/0/1
+[AR1-G0/0/1] ipsec policy map1
+<span class="c"># 查看</span>
+[AR1] display ike sa
+[AR1] display ipsec sa
+[AR1] display ipsec statistics`,
+   ok:'<b>display ike sa</b> 为 RD/ST（已建立）且 <b>display ipsec sa</b> 有 SA；两侧内网能互 ping；在中间设备抓包只能看到 ESP 密文，看不到原始 IP。'},
+  {n:12,t:'WLAN：AC + AP 二层组网（隧道转发）',lv:1,
+   goal:'让 AP 自动上线并广播 SSID，终端关联后能上网。掌握 CAPWAP 隧道、VAP 模板的配置逻辑。',
+   pts:['AC 上创建 AP 管理 VLAN 与业务 VLAN','配置安全模板 / SSID 模板 / VAP 模板并绑定到 AP 组','AP 通过 DHCP 拿地址后自动上线'],
+   cmd:`[AC] vlan batch 100 101
+[AC] interface Vlanif100
+[AC-Vlanif100] ip address 192.168.100.1 24
+[AC] dhcp enable
+[AC] interface Vlanif100
+[AC-Vlanif100] dhcp select interface
+[AC] wlan
+[AC-wlan-view] security-profile name sec
+[AC-wlan-sec-prof-sec] security wpa2 psk pass-phrase Huawei@123 aes
+[AC-wlan-view] ssid-profile name ssid
+[AC-wlan-ssid-prof-ssid] ssid ICT-WLAN
+[AC-wlan-view] vap-profile name vap
+[AC-wlan-vap-prof-vap] forward-mode tunnel
+[AC-wlan-vap-prof-vap] service-vlan vlan-id 101
+[AC-wlan-vap-prof-vap] security-profile sec
+[AC-wlan-vap-prof-vap] ssid-profile ssid
+[AC-wlan-view] ap-group name apgrp
+[AC-wlan-ap-group-apgrp] vap-profile vap wlan 1 radio 0
+[AC-wlan-ap-group-apgrp] vap-profile vap wlan 1 radio 1
+[AC] capwap source interface Vlanif100
+<span class="c"># 查看</span>
+[AC] display ap all
+[AC] display station all
+[AC] display vap ssid ICT-WLAN`,
+   ok:'<b>display ap all</b> 中 AP 状态为 nor（正常），<b>display station all</b> 能看到关联的终端，终端能拿到业务 VLAN 的地址并上网。'},
+  {n:13,t:'IPv6 与 OSPFv3',lv:2,
+   goal:'配置 IPv6 地址、验证 NDP，再用 OSPFv3 做 IPv6 动态路由。',
+   pts:['接口开启 IPv6 并配置全球单播地址，另一侧用 EUI-64 自动生成','用 OSPFv3 建立邻居','观察链路本地地址在邻居建立中的作用'],
+   cmd:`[AR1] ipv6
+[AR1] interface GigabitEthernet0/0/0
+[AR1-G0/0/0] ipv6 enable
+[AR1-G0/0/0] ipv6 address 2001:DB8:1::1 64
+[AR1-G0/0/0] ipv6 address auto link-local
+<span class="c"># EUI-64 方式</span>
+[AR1-G0/0/0] ipv6 address 2001:DB8:2:: 64 eui-64
+<span class="c"># OSPFv3</span>
+[AR1] ospfv3 1
+[AR1-ospfv3-1] router-id 1.1.1.1
+[AR1] interface GigabitEthernet0/0/0
+[AR1-G0/0/0] ospfv3 1 area 0
+<span class="c"># 查看</span>
+[AR1] display ipv6 interface brief
+[AR1] display ipv6 neighbors
+[AR1] display ospfv3 peer
+[AR1] display ospfv3 routing`,
+   ok:'<b>display ipv6 neighbors</b> 能看到对端的链路本地与全球单播地址映射；<b>display ospfv3 peer</b> 为 Full；能 ping 通对端 IPv6 地址。'},
+  {n:14,t:'VXLAN 基础：BGP EVPN 建隧道',lv:3,
+   goal:'两台 VTEP 之间通过 BGP EVPN 建立 VXLAN 隧道，实现跨三层的大二层互通。',
+   pts:['底层跑 OSPF 保证 Loopback 互通','配置 NVE 接口与 BGP EVPN 邻居','验证同 VNI 内主机二层互通'],
+   cmd:`[VTEP1] interface Nve1
+[VTEP1-Nve1] source 1.1.1.1
+[VTEP1-Nve1] vni 10000 head-end peer-list protocol bgp
+<span class="c"># BGP EVPN 邻居</span>
+[VTEP1] bgp 100
+[VTEP1-bgp] peer 2.2.2.2 as-number 100
+[VTEP1-bgp] peer 2.2.2.2 connect-interface LoopBack0
+[VTEP1-bgp] l2vpn-family evpn
+[VTEP1-bgp-af-evpn] peer 2.2.2.2 enable
+<span class="c"># 查看</span>
+[VTEP1] display nve
+[VTEP1] display vxlan vni
+[VTEP1] display bgp evpn peer
+[VTEP1] display bgp evpn all routing-table`,
+   ok:'<b>display vxlan vni</b> 中 VNI 状态 Up；<b>display bgp evpn all routing-table</b> 能看到对端通告的 Type2 路由（MAC/IP）；同 VNI 主机能二层互通。'}
+],
+sw: [
+  {n:1,t:'openEuler 安装与首次登录',lv:1,
+   goal:'完成 openEuler 22.03 LTS 的安装，理清分区、网络与首次登录后的基础检查。',
+   pts:['VMware 新建虚机，2 核 4G、40G 磁盘、桥接或 NAT 网络','安装时配置 root 密码，创建普通用户并加入 wheel 组','装完确认能上网（dnf 可用）'],
+   cmd:`<span class="c"># 检查系统</span>
+cat /etc/os-release
+uname -a
+hostnamectl
+<span class="c"># 网络（NetworkManager 管理）</span>
+nmcli connection show
+nmcli device status
+ip addr show
+ping -c 3 www.openeuler.org
+<span class="c"># 关闭防火墙与 SELinux（实验环境）</span>
+systemctl stop firewalld &amp;&amp; systemctl disable firewalld
+setenforce 0
+<span class="c"># 更新与装常用工具</span>
+dnf makecache
+dnf install -y vim net-tools wget tar`,
+   ok:'<b>ip addr</b> 能看到网卡地址，<b>dnf install</b> 能正常装包；<b>hostnamectl</b> 显示 openEuler 版本。'},
+  {n:2,t:'用户、权限与文件系统',lv:1,
+   goal:'熟练用户/组管理、权限模型与磁盘挂载，这是基础软件赛道的送分题区域。',
+   pts:['新建用户、用户组并设置家目录','用 chmod / chown 控制权限，理解 755/644 的含义','挂载一块新磁盘到业务目录'],
+   cmd:`<span class="c"># 用户与组</span>
+groupadd dbgrp
+useradd -m -g dbgrp -G wheel omm
+passwd omm
+id omm
+<span class="c"># 权限（递归改归属给 omm，openGauss 安装必需）</span>
+chown -R omm:dbgrp /opt/software/openGauss
+chmod 755 /opt/app
+chmod 750 /opt/app/data
+<span class="c"># 磁盘与挂载</span>
+lsblk
+fdisk -l
+fdisk /dev/sdb
+mkfs.ext4 /dev/sdb1
+mkdir -p /data
+mount /dev/sdb1 /data
+echo /dev/sdb1 /data ext4 defaults 0 0 &gt;&gt; /etc/fstab
+df -h`,
+   ok:'<b>id omm</b> 显示所属组正确；<b>df -h</b> 能看到 /data 已挂载；重启后挂载依然生效（fstab 生效）。'},
+  {n:3,t:'进程、内存与服务管理',lv:1,
+   goal:'用 systemd 管理服务，用 ps/top/free 观察进程与内存，能定位占用高的进程。',
+   pts:['安装 httpd 并用 systemctl 启动、设置开机自启','用 top / ps 观察进程，杀掉指定进程','查看内存与交换分区使用'],
+   cmd:`dnf install -y httpd
+systemctl start httpd
+systemctl enable httpd
+systemctl status httpd
+systemctl is-enabled httpd
+<span class="c"># 进程观察</span>
+ps -ef | grep httpd
+top          <span class="c"># 按 P 按 CPU 排序、按 M 按内存排序</span>
+free -h
+<span class="c"># 结束进程</span>
+kill -9 &lt;PID&gt;
+<span class="c"># 查看监听端口</span>
+ss -tlnp | grep 80`,
+   ok:'<b>systemctl status httpd</b> 为 active (running)，<b>ss -tlnp</b> 能看到 80 端口在监听；浏览器或 curl 能访问默认页。'},
+  {n:4,t:'openGauss 单机安装部署',lv:1,
+   goal:'从零把 openGauss 装起来并完成初始化、启动与连接。流程必须记住顺序。',
+   pts:['root 下创建 omm 用户与 dbgrp 组，解压安装包','执行 gs_preinstall 预安装，再以 omm 用户执行 gs_install','启动集群并用 gsql 登录'],
+   cmd:`<span class="c"># ---- root 操作 ----</span>
+mkdir -p /opt/software/openGauss
+chown -R omm:dbgrp /opt/software/openGauss
+cd /opt/software/openGauss
+tar -zxvf openGauss-All-*.tar.gz
+tar -zxvf openGauss-OM-*.tar.gz
+cd script
+./gs_preinstall -U omm -G dbgrp --one-stop-install --sep-env-file=ENVFILE
+<span class="c"># ---- omm 用户操作 ----</span>
+su - omm
+cd /opt/software/openGauss/script
+source ./ENVFILE
+gs_install -X /opt/software/openGauss/script/base_utils/template/cluster.xml
+<span class="c"># ---- 启动与连接 ----</span>
+gs_om -t status --detail
+gs_om -t start
+gsql -d postgres -p 15000 -U omm
+<span class="c"># 环境变量写入 .bashrc，避免每次手动 source</span>
+echo "source /opt/software/openGauss/script/ENVFILE" &gt;&gt; ~/.bashrc`,
+   ok:'<b>gs_om -t status --detail</b> 显示实例状态 Normal；能进入 gsql 交互界面并执行 SQL；<b>select version();</b> 返回版本号。'},
+  {n:5,t:'openGauss SQL 与权限体系',lv:1,
+   goal:'建库建表建用户、授权、增删改查，并体会「三权分立」下的权限划分。',
+   pts:['创建业务用户与数据库，授予最小必要权限','建表插入数据，做基本查询与索引','验证未授权用户访问会被拒绝'],
+   cmd:`-- 用户与库
+CREATE USER dev WITH PASSWORD '<YourStrongPassword123!>';
+CREATE DATABASE appdb OWNER dev ENCODING 'UTF8';
+GRANT CONNECT ON DATABASE appdb TO dev;
+\\c appdb
+-- 表与数据
+CREATE TABLE student(
+  id int PRIMARY KEY,
+  name varchar(32) NOT NULL,
+  score numeric(5,2)
+);
+INSERT INTO student VALUES (1,'mumu',95.5),(2,'lily',88);
+SELECT * FROM student WHERE score &gt; 90 ORDER BY score DESC;
+-- 索引
+CREATE INDEX idx_student_name ON student(name);
+-- 权限
+GRANT SELECT, INSERT ON student TO dev;
+REVOKE DELETE ON student FROM dev;
+\\dp
+\\d+ student`,
+   ok:'<b>\\dp</b> 能看到用户与权限对应关系；未被授权的操作报 permission denied，说明权限生效。'},
+  {n:6,t:'openGauss 备份恢复与主备',lv:2,
+   goal:'会用 gs_dump 做逻辑备份、gs_basebackup 做物理备份；理解主备切换流程。',
+   pts:['导出 postgres 库到 SQL 文件，恢复到新库验证','用 gs_basebackup 做物理备份','在双节点环境用 gs_ctl switchover 做切换'],
+   cmd:`<span class="c"># 逻辑备份与恢复</span>
+gs_dump -p 15000 postgres -f /home/omm/bak.sql -F p
+gsql -d postgres -p 15000 -c "CREATE DATABASE bak_test;"
+gsql -d bak_test -p 15000 -f /home/omm/bak.sql
+<span class="c"># 物理备份</span>
+gs_basebackup -D /home/omm/basebak -p 15000
+<span class="c"># 参数调整（改最大连接数）</span>
+gs_guc set -N all -I all -c "max_connections=500"
+gs_guc reload -N all -I all -c "max_connections=500"
+<span class="c"># 主备状态与切换</span>
+gs_om -t status --detail
+gs_ctl query -D /opt/openGauss/data/dn1
+gs_ctl switchover -D /opt/openGauss/data/dn1`,
+   ok:'恢复后的库中数据完整；<b>gs_om -t status --detail</b> 中主备角色正确；切换后原备机变为 Primary 且业务可用。'},
+  {n:7,t:'openEuler 部署应用（信创迁移实战）',lv:2,
+   goal:'在 openEuler 上跑起一个真实应用（如 Nginx/Java），体验从源码/包到服务的完整链路。',
+   pts:['用 dnf 安装 Nginx 或部署 jar 包','配置 systemd 服务单元，实现开机自启与日志管理','设置防火墙放行端口'],
+   cmd:`dnf install -y nginx
+systemctl enable --now nginx
+firewall-cmd --add-port=80/tcp --permanent
+firewall-cmd --reload
+<span class="c"># 自定义服务单元示例</span>
+cat &gt; /etc/systemd/system/app.service &lt;&lt;'EOF'
+[Unit]
+Description=My App
+After=network.target
+[Service]
+Type=simple
+WorkingDirectory=/opt/app
+ExecStart=/usr/bin/java -jar /opt/app/app.jar
+Restart=always
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl enable --now app
+journalctl -u app -f`,
+   ok:'<b>systemctl status app</b> 为 active；<b>journalctl -u app</b> 能看日志；进程被杀后能自动重启。'},
+  {n:8,t:'鲲鹏平台迁移评估与性能调优',lv:3,
+   goal:'完成一次小型应用的迁移评估：识别架构相关代码，做编译优化与性能对比。',
+   pts:['用源码扫描工具识别 x86 相关代码（如内联汇编、SIMD intrinsic）','在鲲鹏平台重新编译（换 AArch64 版 JDK / 用 -march 优化选项）','用 NUMA 绑定与多队列做性能调优并对比'],
+   cmd:`<span class="c"># 系统与 CPU 信息</span>
+lscpu
+numactl -H
+<span class="c"># 鲲鹏平台编译优化</span>
+gcc -O2 -march=native -o app app.c     <span class="c"># 或显式指定 -mcpu=tsv110</span>
+<span class="c"># NUMA 亲和性绑定（0 号节点 0-31 核 + 内存节点 0）</span>
+numactl -C 0-31 -m 0 ./app
+<span class="c"># 性能对比（多轮取平均）</span>
+time ./app
+<span class="c"># 网卡多队列与中断绑核（可选进阶）</span>
+ethtool -l eth0
+cat /proc/interrupts | grep eth0`,
+   ok:'迁移后的程序能在鲲鹏（AArch64）上正常运行且结果一致；开启编译优化与 NUMA 绑定后跑分有明显提升（记录优化前后耗时对比）。'}
+]
+};
+
+(function(){
+  var D = window.__LABS || {};
+  var LET = function(i){ return ['A','B','C','D','E','F','G','H','I','J','K','L','M','N'][i-1] || i; };
+
+  function render(list, mountId, isSw){
+    var box = document.getElementById(mountId);
+    list.forEach(function(d, idx){
+      var lvTxt = d.lv === 1 ? '核心' : (d.lv === 2 ? '进阶' : '拓展');
+      var el = document.createElement('div');
+      el.className = 'lab' + (isSw ? ' sw' : '');
+      var ptsHTML = d.pts.map(function(p){ return '<li>' + p + '</li>'; }).join('');
+      el.innerHTML =
+        '<div class="lab-h">' +
+          '<span class="num">' + LET(d.n) + '</span>' +
+          '<b>' + d.t + '</b>' +
+          '<span class="lv p' + d.lv + '">' + lvTxt + '</span>' +
+          '<span class="chev">▶</span>' +
+        '</div>' +
+        '<div class="lab-b">' +
+          '<h4>实验目标</h4><p style="margin:0;font-size:14px;color:var(--ink2)">' + d.goal + '</p>' +
+          '<h4>拓扑 / 配置要点</h4><ul>' + ptsHTML + '</ul>' +
+          '<h4>关键命令（可直接复制）</h4>' +
+          '<div class="codewrap"><button class="copy" type="button">复制</button><pre>' + d.cmd + '</pre></div>' +
+          '<h4>验收标准</h4><div class="ok-t">' + d.ok + '</div>' +
+        '</div>';
+
+      var head = el.querySelector('.lab-h');
+      head.addEventListener('click', function(){ el.classList.toggle('open'); });
+
+      var pre = el.querySelector('pre');
+      var btn = el.querySelector('.copy');
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var txt = pre.innerText;
+        var done = function(){ btn.textContent = '已复制 ✓'; setTimeout(function(){ btn.textContent = '复制'; }, 1400); };
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(done).catch(function(){ fallback(txt, done); });
+        } else { fallback(txt, done); }
+      });
+      function fallback(txt, cb){
+        var ta = document.createElement('textarea');
+        ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); cb(); } catch(err){}
+        document.body.removeChild(ta);
+      }
+      box.appendChild(el);
+    });
+  }
+
+  if (D.net) render(D.net, 'lab-net', false);
+  if (D.sw)  render(D.sw,  'lab-sw',  true);
+
+  /* 导航：优先走总览页写入的索引；没有索引时回退到板块目录（一定可达） */
+  document.querySelectorAll('.navlinks a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var k = a.getAttribute('data-nav');
+      if (k === 'labs') return;
+      var hub = null;
+      try { hub = JSON.parse(localStorage.getItem('ict_hub') || 'null'); } catch(err){}
+      location.href = (hub && hub[k]) ? hub[k] : window.__HUB_FOLDER__;
+    });
+  });
+})();
+</script>
+</body>
+</html>

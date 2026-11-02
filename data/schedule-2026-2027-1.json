@@ -1,0 +1,30 @@
+{
+  "source": "示例学生(2026-2027-1)课表.pdf",
+  "parsed_at": "2026-09-14",
+  "term": "2026-2027学年1学期",
+  "student": { "name": "示例学生", "id": "2026XXXXXX", "class": "26网络技术3-3班", "campus": "本部" },
+  "note": "无固定时段的课程列在 other_courses；周次写法沿用教务原文",
+  "weekdays": ["星期一", "星期二", "星期三", "星期四", "星期五"],
+  "rows": [
+    { "day": "星期一", "slot": "1-2", "course": "思政课-概论", "mark": "*", "weeks": "3-18周", "room": "学思楼4-B405", "teacher": "曲绪纲", "class_no": "思政课-概论-0022", "class_group": "26网络技术3-3班", "assess": "考试", "hours": "理论32,实践4", "week_hours": 2, "total_hours": 32, "credits": 2 },
+    { "day": "星期一", "slot": "3-4", "course": "大学英语I", "mark": "*", "weeks": "3-18周", "room": "学思楼2-B505", "teacher": "王颖", "class_no": "大学英语I-计0007", "class_group": "26网络技术3-3班", "assess": "考试", "hours": "理论32,实践32", "week_hours": 4, "total_hours": 64, "credits": 4 },
+    { "day": "星期一", "slot": "5-8", "course": "形势与政策Ⅰ", "mark": "*", "weeks": "第5周", "room": "学思楼2-A502", "teacher": "洪翠翠", "class_no": "形势与政策Ⅰ-0046", "class_group": "26软件技术3-4班;26网络技术3-3班", "assess": "考查", "hours": "理论8,实践0", "week_hours": 4, "total_hours": 8, "credits": 0.15 },
+    { "day": "星期一", "slot": "5-8", "course": "计算机系统与工程", "mark": "*", "weeks": "第6周", "room": "知行楼2-204", "teacher": "刘云霞", "class_no": "计算机系统与工程-0006", "class_group": "26网络技术3-3班", "assess": "考试", "hours": "理论32,实践32", "week_hours": 4, "total_hours": 64, "credits": 4 },
+    { "day": "星期二", "slot": "1-4", "course": "程序设计基础", "mark": "*", "weeks": "3-18周", "room": "知行楼2-106", "teacher": "延霞", "class_no": "程序设计基础-0027", "class_group": "26网络技术3-3班", "assess": "考试", "hours": "理论32,实践32", "week_hours": 4, "total_hours": 64, "credits": 4 },
+    { "day": "星期二", "slot": "5-6", "course": "大学英语I", "mark": "*", "weeks": "3-18周", "room": "学思楼2-B505", "teacher": "王颖", "class_no": "大学英语I-计0007", "class_group": "26网络技术3-3班", "assess": "考试", "hours": "理论32,实践32", "week_hours": 4, "total_hours": 64, "credits": 4 },
+    { "day": "星期二", "slot": "7-8", "course": "高等数学（理工类）", "mark": "*", "weeks": "3-18周", "room": "学思楼2-A403", "teacher": "高瑾", "class_no": "高等数学（理工类）-0008", "class_group": "26网络技术3-3班;26移动互联3-1班（通鸿班）", "assess": "考试", "hours": "理论56,实践8", "week_hours": 4, "total_hours": 64, "credits": 4 },
+    { "day": "星期二", "slot": "9-10", "course": "职业生涯与发展规划", "mark": "*", "weeks": "2-9周", "room": "学思楼2-A402", "teacher": "王建峰", "class_no": "职业生涯与发展规划-0023", "class_group": "26网络技术3-3班", "assess": "考查", "hours": "理论4,实践16", "week_hours": 2, "total_hours": 32, "credits": 1 },
+    { "day": "星期三", "slot": "1-2", "course": "高等数学（理工类）", "mark": "*", "weeks": "2-17周", "room": "学思楼2-A403", "teacher": "高瑾", "class_no": "高等数学（理工类）-0008", "class_group": "26网络技术3-3班;26移动互联3-1班（通鸿班）", "assess": "考试", "hours": "理论56,实践8", "week_hours": 4, "total_hours": 64, "credits": 4 },
+    { "day": "星期三", "slot": "3-4", "course": "思政课-德法", "mark": "*", "weeks": "3-17周(单)", "room": "学思楼1-C210", "teacher": "林汶禧", "class_no": "思政课-德法-0021", "class_group": "26网络技术2-1班;26网络技术3-3班", "assess": "考试", "hours": "理论48,实践8", "week_hours": 3, "total_hours": 48, "credits": 3 },
+    { "day": "星期四", "slot": "1-2", "course": "信息技术Ⅰ", "mark": "*", "weeks": "2-17周", "room": "知行楼3-414", "teacher": "彭迎春", "class_no": "信息技术Ⅰ-0096", "class_group": "26网络技术3-3班", "assess": "考查", "hours": "理论32,实践18", "week_hours": 2, "total_hours": 32, "credits": 3 },
+    { "day": "星期四", "slot": "3-4", "course": "体育Ⅰ-羽毛球", "mark": "*", "weeks": "2-17周", "room": "主馆羽毛球场", "teacher": "李春君", "class_no": "体育Ⅰ-羽毛球-计软0001", "class_group": "无", "assess": "未安排", "hours": "理论4,实践28", "week_hours": 2, "total_hours": 32, "credits": 2 },
+    { "day": "星期四", "slot": "5-6", "course": "思政课-德法", "mark": "*", "weeks": "2-17周", "room": "学思楼1-C210", "teacher": "林汶禧", "class_no": "思政课-德法-0021", "class_group": "26网络技术2-1班;26网络技术3-3班", "assess": "考试", "hours": "理论48,实践8", "week_hours": 3, "total_hours": 48, "credits": 3 },
+    { "day": "星期四", "slot": "9-12", "course": "AI+计算机网络技术", "mark": "*", "weeks": "2-17周", "room": "知行楼2-315", "teacher": "霍红颖", "class_no": "AI+计算机网络技术-0004", "class_group": "26网络技术3-3班", "assess": "考试", "hours": "理论32,实践32", "week_hours": 4, "total_hours": 64, "credits": 4.0 },
+    { "day": "星期五", "slot": "5-8", "course": "计算机系统与工程", "mark": "*", "weeks": "2-5周,7-17周", "room": "知行楼2-204", "teacher": "刘云霞", "class_no": "计算机系统与工程-0006", "class_group": "26网络技术3-3班", "assess": "考试", "hours": "理论32,实践32", "week_hours": 4, "total_hours": 64, "credits": 4 },
+    { "day": "星期五", "slot": "5-8", "course": "形势与政策Ⅰ", "mark": "*", "weeks": "第6周", "room": "学思楼2-A502", "teacher": "洪翠翠", "class_no": "形势与政策Ⅰ-0046", "class_group": "26软件技术3-4班;26网络技术3-3班", "assess": "考查", "hours": "理论8,实践0", "week_hours": 4, "total_hours": 8, "credits": 0.15 }
+  ],
+  "other_courses": [
+    { "course": "国家安全", "teacher": "张振和", "weeks": "9-16周", "total_weeks": 8, "room": "无" }
+  ],
+  "legend": { "*": "理论", "$": "实验", "!": "实践" }
+}

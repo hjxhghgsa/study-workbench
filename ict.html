@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<!-- 安全整改 2026-10-18：CSP 是 XSS 的最后防线。本页 iframe 只嵌同目录 modules/（frame-src 'self'）；
+     文件被练习台以 iframe 嵌入时父页 CSP 不穿透，故本页仍需自带策略。 -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' 'unsafe-inline' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file: https:; font-src 'self' data: file:; media-src 'self' https: file:; frame-src 'self' file:; connect-src 'self' file:; manifest-src 'self' file:; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>华为ICT大赛 · 备赛专区（练习台子页）</title>
+<meta name="robots" content="noindex">
+<style>
+  /* 强制深色：不跟随系统 prefers-color-scheme，与练习台/工作台一致 */
+  html,body{color-scheme:dark;}
+  :root{
+    --bg:#0a0f1a; --bg2:#0e1626; --card:#111c30; --card2:#15223a;
+    --line:#1e2f4d; --txt:#dbe7f5; --muted:#8fa3bf;
+    --green:#2ee6a8; --green-dim:rgba(46,230,168,.12);
+    --blue:#5aa7ff; --blue-dim:rgba(90,167,255,.12);
+    --amber:#ffc555; --red:#ff6b7a; --purple:#b48bff;
+    --radius:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);color:var(--txt);padding-bottom:70px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.7;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-1;
+    background-image:linear-gradient(rgba(90,167,255,.04) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(90,167,255,.04) 1px,transparent 1px);
+    background-size:44px 44px;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px;}
+  /* ===== 顶部 ===== */
+  header.top{padding:38px 0 10px;}
+  .top .back{
+    display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);
+    text-decoration:none;border:1px solid var(--line);padding:4px 12px;border-radius:999px;transition:.2s;
+  }
+  .top .back:hover{color:var(--green);border-color:var(--green);}
+  h1{font-size:clamp(24px,4.4vw,36px);font-weight:800;margin:16px 0 6px;line-height:1.25;}
+  .sec-t{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .sec-t .dot{width:9px;height:9px;border-radius:3px;background:var(--green);box-shadow:0 0 10px var(--green);}
+  .sec-t small{font-weight:500;color:var(--muted);font-size:12.5px;}
+  .panel{margin-top:30px;}
+:root{
+  --radius:16px;
+  --radius-sm:12px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --ring:rgba(46,230,168,.35);
+  --hair:rgba(255,255,255,.07);
+  --card-grad:linear-gradient(158deg,rgba(24,38,63,.94),rgba(14,22,38,.97) 130%);
+  --shadow-card:0 1px 0 rgba(255,255,255,.05) inset, 0 22px 44px -30px rgba(0,0,0,.95);
+  --shadow-pop:0 26px 50px -26px rgba(0,0,0,.95), 0 0 0 1px rgba(46,230,168,.22);
+  --tb-h:66px;
+  /* 次要文字提亮一档，深色底上更好读 */
+  --muted:#9db0c9;
+}
+
+/* 顶部两层柔和氛围光，让第一屏更有纵深（不动原背景网格） */
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(920px 500px at 16% -10%, rgba(46,230,168,.11), transparent 62%),
+    radial-gradient(780px 440px at 88% 0%, rgba(90,167,255,.10), transparent 64%);
+}
+
+::selection{background:rgba(46,230,168,.28);color:#eafff7;}
+::-webkit-scrollbar{width:11px;height:11px;}
+::-webkit-scrollbar-track{background:#080d16;}
+::-webkit-scrollbar-thumb{background:#1d2f4c;border-radius:99px;border:3px solid #080d16;}
+::-webkit-scrollbar-thumb:hover{background:#2a4570;}
+
+body{letter-spacing:.1px;}
+
+  /* ===== v36 · ICT 专区子页：顶栏 ===== */
+  .ict-bar{
+    position:sticky;top:0;z-index:80;
+    background:rgba(9,14,24,.86);
+    -webkit-backdrop-filter:blur(16px) saturate(1.5);
+    backdrop-filter:blur(16px) saturate(1.5);
+    border-bottom:1px solid var(--line);
+  }
+  .ict-bar .in{
+    max-width:980px;margin:0 auto;padding:0 20px;height:56px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .ict-bar .b-t{
+    display:flex;align-items:center;gap:9px;
+    font-size:15px;font-weight:800;letter-spacing:.2px;color:var(--txt);
+    min-width:0;
+  }
+  .ict-bar .b-t i{
+    width:9px;height:9px;border-radius:3px;flex:none;
+    background:var(--green);box-shadow:0 0 10px var(--green);
+  }
+  .ict-bar .b-t span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ict-bar .b-a{
+    margin-left:auto;display:flex;align-items:center;gap:8px;flex:none;
+  }
+  .ict-bar .b-a a,.ict-bar .b-a button{
+    font-family:inherit;font-size:12.5px;font-weight:700;text-decoration:none;cursor:pointer;
+    color:var(--muted);background:transparent;border:1px solid var(--line);
+    padding:5px 11px;border-radius:999px;transition:.18s;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .ict-bar .b-a a:hover,.ict-bar .b-a button:hover{
+    color:var(--green);border-color:rgba(46,230,168,.5);
+    background:rgba(46,230,168,.09);
+  }
+  /* 被母页面以浮层 iframe 打开时：隐藏子页自己的顶栏（浮层已有标题栏与关闭按钮） */
+  html.is-embed .ict-bar{display:none;}
+  @media (max-width:640px){
+    .ict-bar .in{padding:0 14px;height:52px;gap:8px;}
+    .ict-bar .b-t{font-size:13.5px;}
+    .ict-bar .b-a a,.ict-bar .b-a button{padding:5px 9px;font-size:12px;}
+    .ict-bar .b-hide-s{display:none;}
+  }
+  @media (max-width:820px){
+    .panel{padding:16px 15px;}
+  }
+
+  /* ===== 华为ICT大赛 · 独立板块 ===== */
+  .ict-sec{margin-top:34px;}
+  .ict-hero{
+    background:linear-gradient(135deg,rgba(46,230,168,.14),rgba(46,230,168,.04) 60%,transparent);
+    border:1px solid rgba(46,230,168,.34);border-radius:var(--radius);
+    padding:18px 20px;margin-bottom:14px;
+  }
+  .ict-hero h2{font-size:20px;font-weight:800;margin:0 0 6px;display:flex;align-items:center;gap:9px;}
+  .ict-hero h2 .cup{font-size:22px;line-height:1;}
+  .ict-hero p{color:var(--muted);font-size:13.5px;margin:0;}
+  .ict-hero .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;}
+  .ict-hero .chip{
+    font-size:12px;font-weight:600;color:#231a00;background:linear-gradient(92deg,#2ee6a8,#7df5cd);
+    padding:3px 11px;border-radius:999px;
+  }
+  .ict-hero .chip.alt{background:transparent;color:var(--muted);border:1px solid var(--line);font-weight:500;}
+
+  .ict-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;}
+  .ict-tab{
+    cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);
+    background:var(--card);border:1px solid var(--line);padding:8px 15px;border-radius:999px;
+    transition:.2s;font-family:inherit;
+  }
+  .ict-tab:hover{color:var(--txt);border-color:var(--blue);}
+  .ict-tab.on{
+    color:#0a0f1a;background:linear-gradient(92deg,#2ee6a8,#7df5cd);
+    border-color:transparent;box-shadow:0 6px 18px -8px rgba(46,230,168,.75);
+  }
+  .ict-tab .n{
+    display:inline-block;min-width:17px;text-align:center;font-size:11px;font-weight:800;
+    background:rgba(0,0,0,.16);border-radius:999px;padding:0 5px;margin-left:5px;
+  }
+  .ict-tab.on .n{background:rgba(0,0,0,.2);}
+
+  .ict-panel{display:none;}
+  .ict-panel.on{display:block;}
+  .ict-panel .pcap{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    font-size:12.5px;color:var(--muted);margin-bottom:9px;flex-wrap:wrap;
+  }
+  .ict-panel .pcap .acts{display:flex;gap:8px;}
+  .ict-panel .pcap button{
+    cursor:pointer;font-family:inherit;font-size:12px;color:var(--muted);
+    background:var(--card);border:1px solid var(--line);padding:4px 11px;border-radius:8px;transition:.2s;
+  }
+  .ict-panel .pcap button:hover{color:var(--green);border-color:var(--green);}
+
+  .ict-frame-wrap{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;position:relative;
+  }
+  .ict-frame-wrap iframe{
+    display:block;width:100%;border:0;background:var(--bg2);
+    height:min(78vh,900px);
+  }
+  .ict-frame-wrap .ld{
+    position:absolute;inset:0;display:grid;place-items:center;
+    background:var(--card);color:var(--muted);font-size:13px;pointer-events:none;
+    transition:opacity .35s;opacity:1;
+  }
+  .ict-frame-wrap .ld.gone{opacity:0;}
+  .ict-frame-wrap .ld .sp{
+    width:26px;height:26px;border-radius:50%;border:2.5px solid var(--line);
+    border-top-color:#2ee6a8;animation:ictspin .8s linear infinite;margin:0 auto 11px;
+  }
+  @keyframes ictspin{to{transform:rotate(360deg)}}
+  @media (max-width:640px){
+    .ict-frame-wrap iframe{height:min(80vh,640px);}
+    /* 手机端：五个标签横向滚动，一行放得下、不换行、不挤 */
+    .ict-tabs{
+      display:flex;flex-wrap:nowrap;overflow-x:auto;gap:7px;
+      margin:0 -16px 13px;padding:2px 16px 6px;
+      scrollbar-width:none;-webkit-overflow-scrolling:touch;
+      scroll-snap-type:x proximity;
+    }
+    .ict-tabs::-webkit-scrollbar{display:none;}
+    .ict-tab{
+      flex:none;font-size:12.5px;padding:8px 13px;white-space:nowrap;
+      scroll-snap-align:start;
+    }
+    .ict-tab .n{min-width:15px;font-size:10.5px;padding:0 4px;margin-left:4px;}
+    .ict-panel .pcap{font-size:12px;}
+  }
+  /* ---------- 常驻悬浮入口：随时能跳到备赛专区 ---------- */
+  .hub-fab{
+    position:fixed;right:18px;bottom:18px;z-index:8000;
+    display:flex;align-items:center;gap:8px;
+    padding:11px 16px;border:0;border-radius:999px;cursor:pointer;
+    background:linear-gradient(92deg,#2ee6a8,#7df5cd);color:#241d00;
+    font:700 13.5px/1 inherit;letter-spacing:.2px;
+    box-shadow:0 8px 24px rgba(46,230,168,.34),0 2px 8px rgba(0,0,0,.3);
+    transition:transform .16s,box-shadow .16s;
+  }
+  .hub-fab:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(46,230,168,.46),0 3px 10px rgba(0,0,0,.34);}
+  .hub-fab:active{transform:translateY(0);}
+  .hub-fab i{font-style:normal;font-size:15px;}
+  .hub-fab.hide{opacity:0;pointer-events:none;transform:translateY(10px);}
+  @media (max-width:1080px){
+    /* 手机端导航栏里已有金色「华为ICT大赛」入口，悬浮按钮重复且会与吸顶栏打架 → 隐藏 */
+    .hub-fab{display:none !important;}
+  }
+  /* ===== v33 · ICT 专区「只留最上面那一条」导航 =====
+     删除重复：大横幅 #ictGate / 悬浮球 #hubFab / hero 里的重复标题与标签。
+     保留唯一导航 = .ict-tabs（五模块标签），并吸顶常驻在专区顶部。 */
+  .ict-sec .ict-tabs{
+    position:sticky;top:56px;z-index:60;
+    background:rgba(10,15,26,.93);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    padding:9px 0 10px;
+    border-bottom:1px solid var(--line);
+  }
+  @media (max-width:1080px){
+    .ict-sec .ict-tabs{top:56px;}
+  }
+  @media (max-width:640px){
+    /* 手机上保持横向滚动（原有规则已处理），只补吸顶与背景 */
+    .ict-sec .ict-tabs{
+      top:56px;margin:0 -16px 12px;padding:9px 16px 10px;
+    }
+  }
+/* ===== v34 · ICT 专区：左侧导航条（桌面竖排 / 手机纯图标条） =====
+   旧规则里 .ict-tabs 是顶部横排胶囊；这里用更高特异性的 .ict-sec .ict-tabs
+   改成左侧竖排 rail，右侧 .ict-main 放内容。 */
+.ict-body{display:flex;gap:14px;align-items:flex-start;}
+.ict-sec .ict-tabs{
+  flex:0 0 178px;display:flex;flex-direction:column;gap:7px;
+  position:sticky;top:64px;z-index:60;
+  margin:0;padding:0;border:0;background:none;
+  -webkit-backdrop-filter:none;backdrop-filter:none;overflow:visible;
+}
+.ict-main{flex:1 1 auto;min-width:0;}
+.ict-sec .ict-tabs .ict-tab{
+  display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+  margin:0;padding:10px 12px;border-radius:11px;font-size:13.5px;cursor:pointer;
+  background:var(--card);border:1px solid var(--line);color:var(--muted);
+  white-space:normal;scroll-snap-align:none;
+  transition:color .2s,border-color .2s,background .2s;
+}
+.ict-sec .ict-tabs .ict-tab .ico{font-size:15px;line-height:1;flex:none;}
+.ict-sec .ict-tabs .ict-tab .lb{flex:1 1 auto;font-weight:600;}
+.ict-sec .ict-tabs .ict-tab .n{
+  display:inline-block;min-width:15px;text-align:center;font-size:10.5px;font-weight:800;
+  background:rgba(0,0,0,.18);border-radius:999px;padding:1px 6px;margin:0;flex:none;
+}
+.ict-sec .ict-tabs .ict-tab:hover{color:var(--green);border-color:var(--green);}
+.ict-sec .ict-tabs .ict-tab.on{
+  color:var(--green);background:var(--green-dim);border-color:var(--green);font-weight:700;
+  box-shadow:0 6px 18px -10px rgba(46,230,168,.55);
+}
+.ict-sec .ict-tabs .ict-tab.on .n{background:rgba(46,230,168,.22);}
+@media (max-width:860px){
+  .ict-body{gap:9px;}
+  .ict-sec .ict-tabs{flex:0 0 46px;}
+  .ict-sec .ict-tabs .ict-tab{justify-content:center;gap:0;padding:11px 0;}
+  .ict-sec .ict-tabs .ict-tab .lb,
+  .ict-sec .ict-tabs .ict-tab .n{display:none;}
+  .ict-sec .ict-tabs .ict-tab .ico{font-size:17px;}
+}
+/* 性能整改 2026-10-18：系统开启「减少透明度」时去掉毛玻璃 —— 移动端省 GPU，低端机不掉帧 */
+@media (prefers-reduced-transparency: reduce){
+  *,*::before,*::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+}
+</style>
+<script>
+/* ===== 是否被母页面的浮层 iframe 打开 =====
+   不能用 window.self !== window.top 判断：平台自己的发布态就是 workbuddy.link 外壳
+   iframe 套一层 /page/ 内容 frame，直接打开时也满足该条件。
+   所以改用显式标记 ?embed=1 —— 练习台浮层建 iframe 时带上。 */
+try{
+  if (/(\?|&)embed=1(&|$)/.test(location.search || '')) {
+    document.documentElement.classList.add('is-embed');
+  }
+}catch(e){}
+</script>
+<link rel="icon" type="image/x-icon" href="app.ico">
+</head>
+<body>
+
+<div class="ict-bar" id="ictBar">
+  <div class="in">
+    <span class="b-t"><i></i><span>华为ICT大赛 · 备赛专区</span></span>
+    <span class="b-a">
+      <a class="b-hide-s" href="index.html">🏠 工作台</a>
+      <a href="practice.html">← 返回练习台</a>
+    </span>
+  </div>
+</div>
+
+<div class="wrap">
+<section class="ict-sec panel" data-ict="hub" id="ictHub">
+  <div class="sec-t"><span class="dot" style="background:#2ee6a8; box-shadow:0 0 10px #2ee6a8"></span>华为ICT大赛 · 备赛专区 <small>第十一届（2026-2027 赛季）· 网络赛道 + 基础软件赛道 —— 全部在此页就地打开，不用跳走</small></div>
+
+  <div class="ict-hero ict-hero-min">
+    <p>从考纲拆解到动手实验，从理论题库到 13 关闯关 —— 五个模块全部嵌在本页，点开即用。</p>
+  </div>
+
+
+  <div class="ict-body">
+<div class="ict-tabs" id="ictTabs"></div>
+<div class="ict-main" id="ictPanels"></div>
+</div>
+</section>
+</div>
+
+<script>
+/* ================= 华为ICT大赛 · 备赛专区（内嵌 iframe 版） ================= */
+(function(){
+  "use strict";
+
+  var B = 'modules/';
+
+  var MODS = [
+    { id:'ov', name:'备赛总览', icon:'\uD83D\uDCCB', path:'4pxEI2Pj2vAgMbhDGBihkM/index.html',
+      desc:'倒计时 · 赛程时间轴 · 赛制 · 考纲拆解 · 四阶段路线 · 资源入口' },
+    { id:'vd', name:'视频精讲', icon:'\uD83D\uDCFA', path:'WFMV47uv9q1ZcBh3MSObKz/index.html',
+      desc:'13 模块 · 24 条已核验课程（9 网络 + 4 基础软件），点开就地播放', n:'24' },
+    { id:'qz', name:'理论题库', icon:'\uD83D\uDCDD', path:'ewlnOs4VumnFaJq4uT5g2h/119.html',
+      desc:'119 题 · 13 模块 · 单选/多选/判断，即时解析 + 错题本', n:'119' },
+    { id:'lb', name:'实验实操', icon:'\uD83E\uDDEA', path:'bhcfvWwEd8tA6jm4yZZDnl/22.html',
+      desc:'22 个实验（网络 14 + 基础软件 8），含可复制命令与验收标准', n:'22' },
+    { id:'gt', name:'闯关练习台', icon:'\uD83C\uDFC6', path:'7nKlelktuy1RcFtZN8d5Gm/ICT.html',
+      desc:'13 关由简到难 · 倒计时 · 激励语 · 每关通关特效与徽章墙', n:'13' },
+  ];
+
+  var tabsEl = document.getElementById('ictTabs');
+  var panEl  = document.getElementById('ictPanels');
+  if (!tabsEl || !panEl) return;
+
+  /* ---- 标签：innerHTML 建按钮没问题（非 iframe） ---- */
+  tabsEl.innerHTML = MODS.map(function(m, i){
+    return '<button class="ict-tab' + (i === 0 ? ' on' : '') + '" type="button" data-id="' + m.id + '">' +
+           '<span class="ico">' + m.icon + '</span><span class="lb">' + m.name + '</span>' +
+    (m.n ? '<span class="n">' + m.n + '</span>' : '') + '</button>';
+  }).join('');
+
+  /* ---- 面板：外层结构用 innerHTML，iframe 一律 createElement 建 ----
+     平台外层壳会把 innerHTML 里的 <iframe> 清成 about:blank，
+     只有 document.createElement('iframe') 建的才正常加载。 */
+  panEl.innerHTML = MODS.map(function(m, i){
+    return '<div class="ict-panel' + (i === 0 ? ' on' : '') + '" data-id="' + m.id + '">' +
+      '<div class="pcap"><span>' + m.desc + '</span>' +
+        '<span class="acts">' +
+          '<button type="button" class="ict-rl" data-id="' + m.id + '">\u21BB 重新载入</button>' +
+          '<button type="button" class="ict-ft" data-id="' + m.id + '">\u26F6 全屏</button>' +
+        '</span></div>' +
+      '<div class="ict-frame-wrap" data-id="' + m.id + '">' +
+        '<div class="ld"><div><div class="sp"></div>正在载入' + m.name + '\u2026</div></div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  /* 每个模块按需建 iframe（动态 API） */
+  var built = {};
+
+  function wrapOf(id){ return panEl.querySelector('.ict-frame-wrap[data-id="' + id + '"]'); }
+  function ifrOf(id){ var w = wrapOf(id); return w ? w.querySelector('iframe') : null; }
+
+  function build(id){
+    if (built[id]) return ifrOf(id);
+    var m = null;
+    for (var i = 0; i < MODS.length; i++) if (MODS[i].id === id) m = MODS[i];
+    var w = wrapOf(id);
+    if (!m || !w) return null;
+
+    var ifr = document.createElement('iframe');
+    ifr.className = 'ict-ifr';
+    ifr.setAttribute('title', m.name);
+    ifr.setAttribute('allow', 'fullscreen');
+    ifr.setAttribute('referrerpolicy', 'no-referrer');
+    ifr.setAttribute('scrolling', 'auto');
+    ifr.style.cssText = 'display:block;width:100%;border:0;background:var(--bg2);height:min(78vh,900px)';
+
+    /* 先插入 DOM，再设 src（顺序很重要，保证正常发起导航） */
+    w.appendChild(ifr);
+
+    var ld = w.querySelector('.ld');
+    function done(){ if (ld) ld.classList.add('gone'); }
+    /* 12s 兜底：iframe 半天不加载也撤掉遮罩；真加载到了就取消兜底，不留孤儿定时器 */
+    var ldFallback = setTimeout(done, 12000);
+    ifr.addEventListener('load', function () { clearTimeout(ldFallback); done(); });
+
+    ifr.src = B + m.path;      /* 用属性赋值，走正常导航 */
+    built[id] = true;
+    return ifr;
+  }
+
+  function reload(id){
+    var f = ifrOf(id);
+    var w = wrapOf(id);
+    if (!w) return;
+    var ld = w.querySelector('.ld');
+    if (ld) ld.classList.remove('gone');
+    if (f) w.removeChild(f);
+    built[id] = false;
+    build(id);
+  }
+
+  function show(id){
+    var tabs = tabsEl.querySelectorAll('.ict-tab');
+    for (var i = 0; i < tabs.length; i++)
+      tabs[i].classList.toggle('on', tabs[i].getAttribute('data-id') === id);
+    var ps = panEl.querySelectorAll('.ict-panel');
+    for (var j = 0; j < ps.length; j++)
+      ps[j].classList.toggle('on', ps[j].getAttribute('data-id') === id);
+    build(id);
+  }
+
+  tabsEl.addEventListener('click', function(e){
+    var t = e.target.closest ? e.target.closest('.ict-tab') : null;
+    if (t) { show(t.getAttribute('data-id')); return; }
+  });
+
+  panEl.addEventListener('click', function(e){
+    var rl = e.target.closest ? e.target.closest('.ict-rl') : null;
+    if (rl){ reload(rl.getAttribute('data-id')); return; }
+    var ft = e.target.closest ? e.target.closest('.ict-ft') : null;
+    if (ft){
+      var f2 = ifrOf(ft.getAttribute('data-id'));
+      if (f2 && f2.requestFullscreen) f2.requestFullscreen().catch(function(){});
+      return;
+    }
+  });
+
+  /* 首屏先建第一个模块 */
+  build('ov');
+
+  /* 子页面里没有母页面的导航条/悬浮球，toHub 退化为「切到某个模块」 */
+  function toHub(e, which){
+    if (e && e.preventDefault) e.preventDefault();
+    if (which) { try { show(which); } catch (err) {} }
+  }
+
+
+  window.__ICT = { mods: MODS, show: show, build: build, reload: reload, toHub: toHub };
+})();
+</script>
+<script>
+/* ===== v36 · 子页面：hash 深链 =====
+   练习台用 #gt / #qz / #lb … 直接定位到某个模块（如导航条「🏆 华为ICT大赛」→ 闯关标签）。 */
+(function(){
+  "use strict";
+  try{
+    var h = (location.hash || '').replace('#','');
+    if (h && window.__ICT && window.__ICT.show) window.__ICT.show(h);
+    window.addEventListener('hashchange', function(){
+      var k = (location.hash || '').replace('#','');
+      if (k && window.__ICT && window.__ICT.show) window.__ICT.show(k);
+    });
+    /* 父页面（练习台浮层）也可以 postMessage 指定模块。
+       安全整改 2026-10-18：必须校验来源，否则任意网站嵌入本页都能发消息控制标签切换。
+       三条交付线（PWA / 资料库 / 桌面 file://）父页面与本页都同源，e.origin === location.origin 均成立。 */
+    window.addEventListener('message', function(e){
+      if (e.origin !== location.origin) return;
+      var d = e && e.data;
+      if (!d || typeof d !== 'object') return;
+      if (d.__ict && d.mod && window.__ICT && window.__ICT.show) window.__ICT.show(d.mod);
+    });
+  }catch(err){}
+})();
+</script>
+</body>
+</html>

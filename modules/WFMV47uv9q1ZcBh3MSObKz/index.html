@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- local runtime script disabled -->
+<!-- local runtime script disabled -->
+<meta charset="UTF-8">
+<meta content="width=device-width,initial-scale=1" name="viewport">
+<title>视频精讲 · 华为ICT大赛备赛</title>
+<style>
+  :root{--bg:#0a0f1a; --panel:#111c30; --panel2:#15223a; --ink:#dbe7f5; --ink2:#8fa3bf; --ink3:#6b7c96; --line:#1e2f4d; --brand:#2ee6a8; --brand2:#5aa7ff; --ok:#2ee6a8; --warn:#ffc555; --bad:#ff6b7a; --chip:#15223a; --code:#0b1017; --codeink:#d9e2ec; --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px -14px rgba(0,0,0,.7); --r:14px;}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px 80px}
+  .top{
+    position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line);
+  }
+  .top .in{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.2px}
+  .logo i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#7df5cd);
+    display:grid;place-items:center;color:#08131f;font-style:normal;font-size:13px;font-weight:900}
+  .navlinks{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .navlinks a{
+    text-decoration:none;color:var(--ink2);font-size:13.5px;font-weight:600;padding:6px 11px;border-radius:9px;border:1px solid transparent
+  }
+  .navlinks a:hover{background:var(--chip);color:var(--ink)}
+  .navlinks a.on{background:var(--ink);color:var(--bg)}
+  .hero{padding:38px 0 8px}
+  .kicker{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--brand);
+    background:color-mix(in srgb,var(--brand) 10%,transparent);padding:5px 11px;border-radius:99px;letter-spacing:.3px}
+  h1{font-size:32px;line-height:1.25;margin:14px 0 8px;letter-spacing:-.5px}
+  .sub{color:var(--ink2);margin:0;max-width:760px}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .badge{font-size:12.5px;font-weight:600;color:var(--ink2);background:var(--panel);border:1px solid var(--line);
+    padding:5px 11px;border-radius:99px}
+  section{margin-top:38px;scroll-margin-top:70px}
+  h2{font-size:19px;margin:0 0 4px;display:flex;align-items:center;gap:9px;letter-spacing:-.2px}
+  h2 .dot{width:7px;height:7px;border-radius:50%;background:var(--brand);flex:none}
+  .hint{color:var(--ink3);font-size:13.5px;margin:0 0 16px}
+  .track{margin-top:22px}
+  .track-h{display:flex;align-items:baseline;gap:10px;margin:0 0 12px;flex-wrap:wrap}
+  .track-h h3{font-size:16px;margin:0}
+  .track-h .tag{font-size:12px;font-weight:700;color:#08131f;background:var(--brand2);padding:2.5px 9px;border-radius:6px}
+  .track-h .tag.b{background:var(--ok)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);
+    overflow:hidden;display:flex;flex-direction:column;transition:transform .18s ease,box-shadow .18s ease
+  }
+  .card:hover{transform:translateY(-2px)}
+  .card.playing{grid-column:1 / -1;transform:none}
+  .card-b{padding:15px 16px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .mname{font-size:11.5px;font-weight:800;letter-spacing:.6px;color:var(--brand);text-transform:uppercase}
+  .card.b .mname{color:var(--ok)}
+  .vtitle{font-size:14.5px;font-weight:700;line-height:1.45;margin:0;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--ink3);margin-top:auto}
+  .meta span{background:var(--chip);padding:2.5px 8px;border-radius:6px;white-space:nowrap}
+  .btns{display:flex;gap:8px;align-items:center;margin-top:2px}
+  .play{
+    flex:1;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:13.5px;color:#08131f;text-decoration:none;
+    background:linear-gradient(135deg,var(--brand),#7df5cd);padding:9px 12px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;gap:7px
+  }
+  .card.b .play{background:linear-gradient(135deg,#2ee6a8,#2ee6a8)}
+  .play:hover{filter:brightness(1.07)}
+  .alt{font-size:12px;color:var(--ink3);text-decoration:none;border:1px solid var(--line);padding:8px 10px;border-radius:10px;white-space:nowrap}
+  .alt:hover{border-color:var(--ink3);color:var(--ink)}
+  .stage{width:100%;aspect-ratio:16/9;background:#000;border-bottom:1px solid var(--line)}
+  .stage iframe{width:100%;aspect-ratio:16/9;height:auto;border:0;display:block;background:#000}
+  .now{font-size:12.5px;color:var(--ink3);padding:9px 16px 0}
+  .fbk{padding:16px;background:color-mix(in srgb,var(--warn) 8%,transparent);border-bottom:1px solid var(--line);
+    font-size:13.5px;color:var(--ink2);line-height:1.6}
+  .fbk a{color:var(--warn);font-weight:800}
+  .note{
+    background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:10px;
+    padding:13px 16px;font-size:13.5px;color:var(--ink2);margin-top:20px
+  }
+  .note.warn{border-left-color:var(--warn)}
+  .note b{color:var(--ink)}
+  footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink3);font-size:12.5px}
+  @media(max-width:640px){
+    h1{font-size:25px}
+    .grid{grid-template-columns:1fr}
+    .wrap{padding:0 14px 60px}
+  }
+  :root{color-scheme:dark}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#22314e;border-radius:99px}
+  ::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="kicker">● 视频精讲 · 两个赛道的精华课单</span>
+    <h1>13 个模块，24 条已核验的课</h1>
+    <p class="sub">
+      全部来自 B 站，已逐条核验「未下架 + 免费」。每个知识点配一条主课 + 一条备选，主课听不下去直接换。
+      能站内播的就在这一页播；平台若限制内嵌，按钮会直接带你去 B 站看，不会让你对着空白框发愣。
+    </p>
+    <div class="badges">
+      <span class="badge">9 个网络赛道模块</span>
+      <span class="badge">4 个基础软件模块</span>
+      <span class="badge">24 条链接全部实测可达</span>
+      <span class="badge">每模块带备选</span>
+    </div>
+  </div>
+
+  <div class="note" id="playmode">
+    <b>怎么用：</b>按「省资格赛 → 省赛」的考纲顺序看。基础三件套先过一遍 ——
+    <b>eNSP 环境</b>（会装会用）→ <b>数通基础</b>（HCIA 全套）→ <b>Linux 基础</b>（命令行要熟）。
+    这三块打通，后面 OSPF / BGP / VXLAN / openEuler / openGauss 都是顺着往上爬。
+  </div>
+
+  <section class="track" id="net">
+    <div class="track-h">
+      <h3>网络赛道</h3><span class="tag">数通 · DCN · 安全 · WLAN</span>
+    </div>
+    <div class="grid" id="g-net"></div>
+  </section>
+
+  <section class="track" id="sw">
+    <div class="track-h">
+      <h3>基础软件赛道</h3><span class="tag b">openEuler · openGauss · Kunpeng</span>
+    </div>
+    <div class="grid" id="g-sw"></div>
+  </section>
+
+  <footer>
+    视频版权归原 UP 主所有，此处仅作学习索引。卡片右下角的 ↗ 永远可以直接跳转到 B 站播放页。
+  </footer>
+</div>
+
+<script>
+/* 板块目录（所有页面的导航兜底入口，永远可达） */
+window.__HUB_FOLDER__ = 'https://workbuddy.link/p/ttB15OwOZjn8H00RjliKGG';
+
+/* ---------- 视频数据（BV 号已逐条核验：未下架 / 免费） ---------- */
+window.__VID = {
+  net: [
+    {m:'环境 · 必装', t:'【全100集】B站最详细的 eNSP 实验配置全套保姆级教程', up:'网络工程师老王', len:'6小时42分', play:'25.9万',
+     bv:'BV1KyYWzjE9b', alt:{bv:'BV1X7411w7gZ', up:'韩立刚', note:'eNSP 基础操作'}},
+    {m:'数通基础', t:'华为官方 HCIA-Datacom 在线视频', up:'网络达达老师', len:'31小时38分', play:'20.9万',
+     bv:'BV15Z4y1276K', alt:{bv:'BV1LokeBhE69', up:'网工徐哥', note:'2026版全套200集'}},
+    {m:'路由 · OSPF', t:'华为 OSPFv2 / OSPFv3 协议原理与配置合集（HCIA+HCIP+HCIE）', up:'ICT网络攻城狮', len:'1小时38分', play:'2532',
+     bv:'BV1nzS9YSEuU', alt:{bv:'BV1YV41127U5', up:'豆豆家姐姐', note:'45分钟原理速通'}},
+    {m:'路由 · BGP', t:'90分钟彻底搞懂 BGP 路由协议：工作原理到实战配置', up:'网工老赵头', len:'3小时9分', play:'2.1万',
+     bv:'BV1AwaozcEVZ', alt:null},
+    {m:'DCN · VXLAN', t:'【超详细】VXLAN 培训视频 · 华为', up:'蜕变的网工', len:'4小时38分', play:'5.1万',
+     bv:'BV1fe411K7JD', alt:{bv:'BV1Ht6eBYEDM', up:'众元网络', note:'VXLAN+EVPN 原理与部署'}},
+    {m:'安全 · 防火墙', t:'配置安全策略 · USG6000 系列配置视频（03）', up:'巨核莓', len:'14分', play:'1.6万',
+     bv:'BV19t411e7Et', alt:{bv:'BV1TjdaYmEvz', up:'精彩网络技术', note:'USG6000 基础配置实验'}},
+    {m:'安全 · VPN', t:'网工实验配置：IPsec VPN', up:'云网自习馆', len:'14分', play:'3.4万',
+     bv:'BV1ku411w7sc', alt:{bv:'BV1Gt411k7c6', up:'巨核莓', note:'点到点 IPSec 预共享密钥'}},
+    {m:'WLAN', t:'华为 WLAN · AP 上线配置（二层组网）', up:'王老师讲无线', len:'14分', play:'3.2万',
+     bv:'BV1hF411y76w', alt:{bv:'BV1w3411L7T3', up:'晓飞PC', note:'eNSP 里搭 AC/AP'}},
+    {m:'IPv6', t:'【全网最详细】IPv6 培训视频 · 华为', up:'蜕变的网工', len:'9小时39分', play:'7.9万',
+     bv:'BV1ct4y1E7q3', alt:null}
+  ],
+  sw: [
+    {m:'Linux 基础', t:'【GeekHour】30分钟 Linux 入门教程', up:'GeekHour', len:'36分', play:'48.4万',
+     bv:'BV1cq421w72c', alt:{bv:'BV12L411a7Ne', up:'程序员良许', note:'速学150个常用命令'}},
+    {m:'openEuler', t:'华为官方 Linux 培训视频 · HCIA-openEuler', up:'网络达达老师', len:'7小时17分', play:'6.1万',
+     bv:'BV1Na411x7wr', alt:{bv:'BV1LGz5YzENS', up:'智汇云校顾俊学长', note:'2024版最全·24小时'}},
+    {m:'openGauss', t:'华为认证 HCIA-openGauss V1.0 在线课程', up:'信创-国产之道', len:'5小时27分', play:'2.3万',
+     bv:'BV1Rm4y1d728', alt:{bv:'BV1HW4y147yE', up:'Gauss松鼠会', note:'数据库安装部署实操'}},
+    {m:'Kunpeng · 鲲鹏', t:'《鲲鹏架构入门与实战》配书视频', up:'AI架构师张磊', len:'3小时35分', play:'2659',
+     bv:'BV1T54y1p7Vr', alt:{bv:'BV1Fy4y1r7Pa', up:'这年这兔', note:'鲲鹏应用开发深入'}}
+  ]
+};
+
+(function(){
+  var cur = null;                 // 当前展开的卡片
+  // 平台静态产物固定下发 CSP frame-src 'self'，第三方播放器无法站内内嵌；
+  // 仅本机预览（file:// 或 localhost/内网）可内嵌，线上统一跳 B 站播放。
+  var INLINE_OK = (location.protocol === 'file:' ||
+                   /^(localhost|127\.0\.0\.1|192\.168\.|10\.|0\.)/.test(location.hostname));
+
+  function embedURL(bv){
+    return 'https://player.bilibili.com/player.html?bvid=' + bv +
+           '&page=1&high_quality=1&danmaku=0&autoplay=1';
+  }
+  function pageURL(bv){ return 'https://www.bilibili.com/video/' + bv + '/'; }
+
+  function updateHint(){
+    var el = document.getElementById('playmode');
+    if (!el) return;
+    if (INLINE_OK === false){
+      el.className = 'note warn';
+      el.innerHTML = '<b>说明：</b>本站页面按平台安全策略禁止第三方播放器内嵌（frame-src 限制），' +
+        '所以点「播放」会直接在新标签页打开 B 站对应课时，不会出现空白框。' +
+        '想留在页内比课的话，先看每张卡的标题、UP 主和时长，挑好再点开即可。';
+    } else {
+      el.className = 'note';
+      el.innerHTML = '<b>怎么用：</b>按「省资格赛 → 省赛」的考纲顺序看。基础三件套先过一遍 —— ' +
+        '<b>eNSP 环境</b>（会装会用）→ <b>数通基础</b>（HCIA 全套）→ <b>Linux 基础</b>（命令行要熟）。' +
+        '这三块打通，后面 OSPF / BGP / VXLAN / openEuler / openGauss 都是顺着往上爬。';
+    }
+  }
+
+  updateHint();
+
+  function closeCurrent(keep){
+    if (cur && cur !== keep){
+      var st = cur.querySelector('.stage');
+      if (st) st.remove();
+      var fb = cur.querySelector('.fbk');
+      if (fb) fb.remove();
+      var nb = cur.querySelector('.now');
+      if (nb) nb.remove();
+      cur.removeAttribute('data-fbk');
+      cur.classList.remove('playing');
+      cur = null;
+    }
+  }
+
+  function jump(bv){ window.open(pageURL(bv), '_blank', 'noopener'); }
+
+  function open(card, data){
+    /* 平台限制内嵌：在用户手势里直接开新标签，不会被弹窗拦截 */
+    if (!INLINE_OK){ jump(data.bv); return; }
+
+    if (card.classList.contains('playing')){ closeCurrent(); return; }
+    closeCurrent();
+    card.classList.add('playing');
+
+    var stage = document.createElement('div');
+    stage.className = 'stage';
+    var ifr = document.createElement('iframe');
+    ifr.src = embedURL(data.bv);
+    ifr.setAttribute('allowfullscreen', 'true');
+    ifr.setAttribute('scrolling', 'no');
+    ifr.setAttribute('frameborder', '0');
+    ifr.setAttribute('allow', 'autoplay; fullscreen; encrypted-media');
+    stage.appendChild(ifr);
+    card.insertBefore(stage, card.firstChild);
+
+    var nb = document.createElement('div');
+    nb.className = 'now';
+    nb.textContent = '正在播放：' + data.t + ' · ' + data.up;
+    card.insertBefore(nb, stage.nextSibling);
+
+    cur = card;
+    requestAnimationFrame(function(){
+      var y = stage.getBoundingClientRect().top + window.pageYOffset - 76;
+      window.scrollTo({top:y, behavior:'smooth'});
+    });
+  }
+
+  function render(list, mountId, isB){
+    var box = document.getElementById(mountId);
+    list.forEach(function(d){
+      var c = document.createElement('div');
+      c.className = 'card' + (isB ? ' b' : '');
+      var altHTML = d.alt
+        ? '<a class="alt" href="' + pageURL(d.alt.bv) + '" target="_blank" rel="noopener" title="备选课：' +
+          d.alt.note + ' · ' + d.alt.up + '">备选</a>'
+        : '';
+      c.innerHTML =
+        '<div class="card-b">' +
+          '<div class="mname">' + d.m + '</div>' +
+          '<p class="vtitle">' + d.t + '</p>' +
+          '<div class="meta"><span>' + d.up + '</span><span>' + d.len + '</span><span>播放 ' + d.play + '</span></div>' +
+          '<div class="btns">' +
+            '<button class="play" type="button">▶ 播放</button>' +
+            altHTML +
+            '<a class="alt" href="' + pageURL(d.bv) + '" target="_blank" rel="noopener" title="在 B 站打开">↗</a>' +
+          '</div>' +
+        '</div>';
+      c.querySelector('.play').addEventListener('click', function(){ open(c, d); });
+      box.appendChild(c);
+    });
+  }
+
+  if (window.__VID){
+    render(window.__VID.net, 'g-net', false);
+    render(window.__VID.sw,  'g-sw',  true);
+  }
+
+  /* 导航：优先走总览页写入的索引；没有索引时回退到板块目录（一定可达） */
+  document.querySelectorAll('.navlinks a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var k = a.getAttribute('data-nav');
+      if (k === 'videos') return;
+      var hub = null;
+      try { hub = JSON.parse(localStorage.getItem('ict_hub') || 'null'); } catch(err){}
+      location.href = (hub && hub[k]) ? hub[k] : window.__HUB_FOLDER__;
+    });
+  });
+})();
+</script>
+</body>
+</html>

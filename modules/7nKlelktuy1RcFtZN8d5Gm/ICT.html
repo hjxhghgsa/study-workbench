@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- local runtime script disabled -->
+<meta charset="UTF-8">
+<meta content="width=device-width,initial-scale=1" name="viewport">
+<title>华为ICT · 闯关练习台</title>
+<style>
+  :root{
+    --bg:#0a0f1a; --bg2:#0d1526; --card:#111c30; --card2:#16233c;
+    --line:#1e2f4d; --line2:#2a4066;
+    --txt:#e8eef7; --muted:#8fa3bf; --dim:#5c6f8f;
+    --gold:#f5c518; --gold2:#ffd75e; --red:#ff5a52; --green:#2ee6a8;
+    --blue:#3b82f6; --teal:#22c55e; --purple:#a78bfa;
+    --shadow:0 10px 30px -12px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 600px at 50% -10%, #12203a 0%, var(--bg) 55%);
+    color:var(--txt); font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px 90px}
+  /* ---------- 顶栏 ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:30;background:rgba(10,15,26,.82);
+    backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line);
+  }
+  .topbar .in{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:.2px}
+  .logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--gold),#ff9d2e);
+    display:grid;place-items:center;color:#1a1203;font-style:normal;font-size:16px}
+  .prog{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+  .prog .bar{width:150px;height:8px;border-radius:99px;background:var(--card);overflow:hidden}
+  .prog .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--green));transition:width .5s ease;border-radius:99px}
+  .prog b{color:var(--gold);font-size:15px}
+  .badge-btn{border:1px solid var(--line2);background:var(--card);color:var(--txt);font-weight:700;font-size:13px;
+    padding:8px 14px;border-radius:10px;cursor:pointer;transition:.15s}
+  .badge-btn:hover{border-color:var(--gold);color:var(--gold)}
+  /* ---------- hero ---------- */
+  .hero{padding:40px 0 10px}
+  .kicker{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:var(--gold);
+    background:rgba(245,197,24,.1);border:1px solid rgba(245,197,24,.25);padding:5px 12px;border-radius:99px;letter-spacing:.4px}
+  h1{font-size:34px;line-height:1.2;margin:14px 0 10px;letter-spacing:-.5px}
+  h1 em{font-style:normal;background:linear-gradient(120deg,var(--gold),#ff9d2e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:var(--muted);margin:0;max-width:760px;font-size:15px}
+  .hints{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .hint{font-size:12.5px;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:6px 11px;border-radius:99px}
+  .hint b{color:var(--txt)}
+  /* ---------- 赛道分节 ---------- */
+  section{margin-top:40px;scroll-margin-top:80px}
+  .sec-h{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .sec-h h2{font-size:19px;margin:0;display:flex;align-items:center;gap:9px;letter-spacing:-.2px}
+  .sec-h .tag{font-size:11.5px;font-weight:800;letter-spacing:.5px;color:#fff;padding:3px 10px;border-radius:6px}
+  .tag.net{background:var(--blue)} .tag.sw{background:var(--teal)} .tag.final{background:var(--purple)}
+  .sec-h .line{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  .sec-h .done-n{font-size:12.5px;color:var(--dim)}
+  /* ---------- 关卡网格 ---------- */
+  .levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .lv{
+    position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 14px;
+    cursor:pointer;transition:transform .16s ease,border-color .16s,box-shadow .16s;overflow:hidden
+  }
+  .lv:hover{transform:translateY(-3px);border-color:var(--line2);box-shadow:var(--shadow)}
+  .lv.open{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+  .lv.locked{opacity:.45;cursor:not-allowed}
+  .lv.locked:hover{transform:none;border-color:var(--line)}
+  .lv.done{border-color:rgba(46,230,168,.35)}
+  .lv-top{display:flex;align-items:center;gap:10px}
+  .lv-ico{width:44px;height:44px;border-radius:12px;background:var(--card2);display:grid;place-items:center;font-size:24px;flex:none}
+  .lv-num{font-size:11px;font-weight:800;color:var(--dim);letter-spacing:.5px}
+  .lv-name{font-size:15.5px;font-weight:800;margin:0;line-height:1.3}
+  .lv-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:var(--muted)}
+  .lv-meta span{background:var(--card2);padding:2px 8px;border-radius:6px}
+  .lv-meta .diff-easy{color:var(--green)} .lv-meta .diff-mid{color:var(--gold)} .lv-meta .diff-hard{color:var(--red)}
+  .lv-foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+  .lv-stars{font-size:15px;letter-spacing:2px;color:var(--dim)}
+  .lv-stars .on{color:var(--gold)}
+  .lv-cta{font-size:12px;font-weight:800;color:var(--gold)}
+  .lv.locked .lv-cta{color:var(--dim)}
+  .lv-best{font-size:11.5px;color:var(--muted)}
+  .lv.locked .lv-ico{filter:grayscale(1)}
+  /* ---------- 挑战覆盖层 ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(5,8,14,.82);backdrop-filter:blur(6px);z-index:50;
+    display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:30px 16px}
+  .overlay.on{display:flex}
+  .qpanel{width:min(680px,100%);background:var(--bg2);border:1px solid var(--line2);border-radius:20px;
+    box-shadow:var(--shadow);overflow:hidden;margin:auto 0;animation:pop .25s ease}
+  @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+  .qhead{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .qhead .lv-ico{width:40px;height:40px;font-size:21px}
+  .qhead .t{flex:1;min-width:0}
+  .qhead .t b{display:block;font-size:16px;line-height:1.3}
+  .qhead .t span{font-size:12px;color:var(--muted)}
+  .qhead .x{border:0;background:transparent;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;padding:4px}
+  .qhead .x:hover{color:var(--txt)}
+  .qbar{display:flex;align-items:center;gap:10px;padding:10px 20px;background:var(--card);font-size:12.5px;color:var(--muted)}
+  .qbar .bar{flex:1;height:6px;border-radius:99px;background:var(--card2);overflow:hidden}
+  .qbar .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .3s}
+  .qbar b{color:var(--txt)}
+  .qbody{padding:20px 20px 24px}
+  .qmeta{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+  .qtype{font-size:11px;font-weight:800;color:#fff;padding:2px 9px;border-radius:6px}
+  .qtype.s{background:var(--blue)} .qtype.m{background:var(--purple)} .qtype.j{background:var(--teal)}
+  .qtext{font-size:17px;font-weight:700;line-height:1.6;margin:0 0 18px}
+  .qtext code{font-family:ui-monospace,Consolas,monospace;font-size:14.5px;background:var(--card);padding:2px 7px;border-radius:6px;color:var(--gold)}
+  /* 倒计时环 */
+  .timer-wrap{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12.5px;color:var(--muted)}
+  .timer-ring{position:relative;width:52px;height:52px;flex:none}
+  .timer-ring svg{transform:rotate(-90deg)}
+  .timer-ring .bg{stroke:var(--card2)}
+  .timer-ring .fg{stroke:var(--gold);transition:stroke-dashoffset 1s linear,stroke .3s}
+  .timer-ring .num{position:absolute;inset:0;display:grid;place-items:center;font-size:18px;font-weight:800;color:var(--txt)}
+  .timer-wrap .tlabel{line-height:1.3}
+  .timer-wrap .tlabel b{display:block;font-size:13px}
+  .timer-wrap .tlabel span{color:var(--dim);font-size:11.5px}
+  .timer-wrap.warn .fg{stroke:var(--red)} .timer-wrap.warn .num{color:var(--red)}
+  /* 选项 */
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{display:flex;align-items:flex-start;gap:11px;width:100%;text-align:left;background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--txt);font:inherit;font-size:14.5px;
+    cursor:pointer;transition:.13s;line-height:1.5}
+  .opt:hover{border-color:var(--line2);background:var(--card2)}
+  .opt .k{width:24px;height:24px;border-radius:7px;background:var(--card2);color:var(--muted);display:grid;place-items:center;
+    font-size:12.5px;font-weight:800;flex:none;margin-top:1px}
+  .opt.sel{border-color:var(--blue);background:rgba(59,130,246,.12)}
+  .opt.sel .k{background:var(--blue);color:#fff}
+  .opt.ok{border-color:var(--green);background:rgba(46,230,168,.1)}
+  .opt.ok .k{background:var(--green);color:#06281a}
+  .opt.no{border-color:var(--red);background:rgba(255,90,82,.1)}
+  .opt.no .k{background:var(--red);color:#fff}
+  .opt:disabled{cursor:default}
+  /* 反馈 */
+  .fb{margin-top:16px;border-radius:12px;padding:13px 15px;font-size:14px;display:none;line-height:1.65}
+  .fb.show{display:block;animation:pop .2s ease}
+  .fb.good{background:rgba(46,230,168,.1);border:1px solid rgba(46,230,168,.3)}
+  .fb.bad{background:rgba(255,90,82,.1);border:1px solid rgba(255,90,82,.3)}
+  .fb .say{font-weight:800;font-size:15px;display:block;margin-bottom:6px}
+  .fb .say.g{color:var(--green)} .fb .say.b{color:var(--red)}
+  .fb .exp{color:var(--muted)}
+  .fb .exp b{color:var(--txt)}
+  .qfoot{margin-top:16px;display:flex;gap:10px;align-items:center;justify-content:flex-end}
+  .btn{border:0;cursor:pointer;font:inherit;font-weight:800;font-size:14px;border-radius:11px;padding:11px 18px;transition:.15s}
+  .btn-pri{background:linear-gradient(135deg,var(--gold),#ff9d2e);color:#241a02}
+  .btn-pri:hover{filter:brightness(1.07)}
+  .btn-ghost{background:var(--card);color:var(--muted);border:1px solid var(--line)}
+  .btn-ghost:hover{color:var(--txt);border-color:var(--line2)}
+  .streak{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#ff9d2e;margin-right:auto}
+  /* 结算 */
+  .result{padding:34px 24px 30px;text-align:center}
+  .result .trophy{font-size:64px;margin-bottom:6px;animation:pop .5s ease}
+  .result h3{font-size:24px;margin:4px 0 6px}
+  .result .stars{font-size:34px;letter-spacing:6px;margin:6px 0 2px}
+  .result .stars span{display:inline-block;opacity:0;transform:scale(.3)}
+  .result .stars span.on{opacity:1;transform:scale(1);color:var(--gold);transition:.35s cubic-bezier(.34,1.56,.64,1)}
+  .result .stars span.off{opacity:.35;transform:scale(1);color:var(--dim);transition:.35s}
+  .result .kv{display:flex;justify-content:center;gap:22px;margin:16px 0;flex-wrap:wrap}
+  .result .kv span{font-size:13px;color:var(--muted)}
+  .result .kv b{display:block;font-size:22px;color:var(--txt)}
+  .result .say{font-size:16px;font-weight:700;margin:4px 0 18px;min-height:24px}
+  .result .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .badge-unlock{margin:14px auto 4px;display:inline-flex;align-items:center;gap:9px;background:rgba(245,197,24,.12);
+    border:1px solid rgba(245,197,24,.4);color:var(--gold2);padding:9px 16px;border-radius:12px;font-weight:800;font-size:14px;animation:pop .4s ease}
+  /* 徽章墙 */
+  .badges-mask{position:fixed;inset:0;background:rgba(5,8,14,.8);backdrop-filter:blur(5px);z-index:60;display:none;align-items:center;justify-content:center;padding:24px 16px}
+  .badges-mask.on{display:flex}
+  .badges-box{width:min(620px,100%);background:var(--bg2);border:1px solid var(--line2);border-radius:20px;padding:24px;box-shadow:var(--shadow);max-height:86vh;overflow-y:auto}
+  .badges-box h3{margin:0 0 4px;font-size:20px;display:flex;align-items:center;gap:9px}
+  .badges-box .b-sub{color:var(--muted);font-size:13px;margin:0 0 18px}
+  .bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
+  .b{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center;transition:.2s}
+  .b .ic{font-size:30px;display:block;margin-bottom:6px;filter:grayscale(1);opacity:.4}
+  .b.on{border-color:rgba(245,197,24,.5);background:rgba(245,197,24,.06)}
+  .b.on .ic{filter:none;opacity:1}
+  .b .n{font-size:12.5px;font-weight:700;color:var(--txt);display:block}
+  .b .s{font-size:11px;color:var(--dim);display:block;margin-top:2px}
+  .b.locked .n{color:var(--dim)}
+  .b.on .s{color:var(--gold)}
+  .badges-box .close{display:block;margin:20px auto 0;background:var(--card);border:1px solid var(--line);color:var(--muted);font:inherit;font-weight:700;padding:10px 22px;border-radius:10px;cursor:pointer}
+  .badges-box .close:hover{color:var(--txt)}
+  .grand{margin-top:14px;text-align:center;font-weight:800;color:var(--gold);font-size:15px}
+  /* 底部 */
+  footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:12.5px}
+  footer a{color:var(--muted);text-decoration:none;margin-right:14px}
+  footer a:hover{color:var(--gold)}
+  /* confetti */
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:70}
+  @media(max-width:640px){
+    h1{font-size:26px}
+    .levels{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+    .qpanel{margin:0}
+    .overlay{padding:12px 8px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="in">
+  <div class="logo"><i>🏆</i><span>华为ICT · 闯关练习台</span></div>
+  <div class="prog">
+    <span>通关 <b id="prog-done">0</b>/13</span>
+    <span class="bar"><i id="prog-bar"></i></span>
+    <button class="badge-btn" id="btn-badges">🎖 徽章墙</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="kicker">● 第十一届华为ICT大赛 · 网络 + 基础软件双赛道</span>
+    <h1>一关一关闯，<em>由简到难</em>拿下 13 个模块</h1>
+    <p class="sub">
+      共 119 道真题级题目，按「数通基础 → 交换路由 → 安全无线 → 基础软件 → 综合冲刺」的顺序排布。
+      每关限时答题，答完有礼炮彩带和专属徽章；13 关全亮，你就是「ICT 满级」。
+    </p>
+    <div class="hints">
+      <span class="hint">⏱ <b>每题限时</b>倒计时，超时算错</span>
+      <span class="hint">🔥 <b>连对</b>有加成鼓励</span>
+      <span class="hint">🎖 <b>通关点亮徽章</b>，最佳成绩会记住</span>
+      <span class="hint">🔄 进度自动保存，关掉再开接着闯</span>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <footer>
+    题库与备赛内容来自本站「华为ICT大赛备赛」板块 ·
+    <a href="https://workbuddy.link/p/WFMV47uv9q1ZcBh3MSObKz" rel="noopener" target="_blank">视频精讲</a>
+    <a href="https://workbuddy.link/p/bhcfvWwEd8tA6jm4yZZDnl" rel="noopener" target="_blank">实验手册</a>
+    <a href="https://workbuddy.link/p/4pxEI2Pj2vAgMbhDGBihkM" rel="noopener" target="_blank">备赛总览</a>
+    <br><span style="color:var(--dim)">闯关进度保存在本机浏览器，清除缓存会重置。</span>
+  </footer>
+</div>
+
+<!-- 挑战覆盖层 -->
+<div class="overlay" id="overlay">
+  <div class="qpanel" id="qpanel"></div>
+</div>
+
+<!-- 徽章墙 -->
+<div class="badges-mask" id="badges-mask">
+  <div class="badges-box">
+    <h3>🎖 徽章墙</h3>
+    <p class="b-sub">每通关一个模块，点亮一枚专属徽章。集齐 13 枚，你就是 ICT 满级选手。</p>
+    <div class="bgrid" id="bgrid"></div>
+    <div class="grand" id="grand" style="display:none">🏆 大满贯达成！13 关全部通关！</div>
+    <button class="close" id="btn-badges-close">关闭</button>
+  </div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+/* ================= 题库（由生成脚本注入） ================= */
+window.__BANK = [
+/* ---------- 一、数通基础 ---------- */
+{m:'数通基础',t:'单选',q:'OSI 参考模型中，负责端到端可靠传输的是哪一层？',o:['网络层','传输层','数据链路层','会话层'],a:[1],e:'传输层（TCP/UDP）负责端到端的可靠传输与流量控制。TCP 通过序号、确认、重传保证可靠性；网络层只负责逐跳转发，不保证可靠性。'},
+{m:'数通基础',t:'单选',q:'TCP 三次握手过程中，第二个报文携带的标志位是？',o:['SYN','ACK','SYN + ACK','FIN + ACK'],a:[2],e:'第一次 SYN，第二次 SYN+ACK，第三次 ACK。第二个报文既要确认对方的 SYN（ACK），又要发起自己的同步（SYN）。'},
+{m:'数通基础',t:'单选',q:'下列哪个 IPv4 地址属于私有地址？',o:['11.0.0.1','172.16.0.1','192.169.1.1','224.0.0.1'],a:[1],e:'私有地址段为 10.0.0.0/8、172.16.0.0/12（即 172.16.0.0–172.31.255.255）、192.168.0.0/16。172.16.0.1 命中第二段；11.0.0.1 是公网地址；192.169 不属于私有段；224.0.0.1 是组播地址。'},
+{m:'数通基础',t:'单选',q:'子网掩码为 255.255.255.192 的子网，可分配给主机的地址个数是？',o:['30','62','64','126'],a:[1],e:'192 = 11000000，主机位 6 位，总地址 2^6 = 64，去掉网络地址与广播地址，可用主机地址 62 个。'},
+{m:'数通基础',t:'单选',q:'ARP 协议的作用是？',o:['根据 MAC 地址查询 IP 地址','根据 IP 地址解析出 MAC 地址','动态分配 IP 地址','在自治系统间传递路由'],a:[1],e:'ARP（Address Resolution Protocol）是根据目的 IP 地址获取对应 MAC 地址。反向的 RARP 才是由 MAC 求 IP；动态分配 IP 是 DHCP。'},
+{m:'数通基础',t:'单选',q:'在 Huawei VRP 系统中，查看设备当前生效配置的命令是？',o:['display saved-configuration','display current-configuration','show running-config','display startup'],a:[1],e:'display current-configuration 看内存中当前生效配置；display saved-configuration 看已保存的配置文件内容；display startup 看下次启动使用的配置文件名。'},
+{m:'数通基础',t:'单选',q:'IPv4 报文首部的最小长度是多少字节？',o:['20','24','40','60'],a:[0],e:'IPv4 固定首部 20 字节，加可选项后最长 60 字节。对比记忆：IPv6 固定首部 40 字节且不含可选项。'},
+{m:'数通基础',t:'多选',q:'下列关于 TCP 与 UDP 的说法，正确的有哪些？',o:['TCP 面向连接，UDP 无连接','UDP 首部固定 8 字节','TCP 提供流量控制与拥塞控制','UDP 通过重传机制保证可靠交付'],a:[0,1,2],e:'UDP 不做重传、不保证可靠交付，可靠性要由上层应用自己保证。TCP 首部固定 20 字节、UDP 首部固定 8 字节，这是高频考点。'},
+{m:'数通基础',t:'判断',q:'同一台交换机上，不同的 VLAN 属于不同的广播域。',o:['正确','错误'],a:[0],e:'VLAN 的核心作用就是隔离广播域。不同 VLAN 之间二层隔离，必须借助三层设备（路由器或三层交换机）才能互通。'},
+{m:'数通基础',t:'单选',q:'下列哪一项命令可以在设备上查看接口 IP 地址简要信息？',o:['display ip interface brief','display interface brief','display ip routing-table','display version'],a:[0],e:'display ip interface brief 显示接口的 IP 地址、物理与协议状态；display ip routing-table 看路由表；display version 看版本与硬件信息。'},
+
+/* ---------- 二、二层交换 ---------- */
+{m:'二层交换',t:'单选',q:'华为交换机接口的缺省链路类型是？',o:['Access','Trunk','Hybrid','QinQ'],a:[2],e:'华为交换机端口缺省为 Hybrid 类型。Hybrid 兼具 Access 与 Trunk 的能力，可灵活配置 tag/untag 的 VLAN。思科设备默认才是 Access。'},
+{m:'二层交换',t:'单选',q:'缺省情况下，STP 的 Forward Delay 定时器时长是多少秒？',o:['5','10','15','20'],a:[2],e:'STP 三个定时器：Hello 2 秒、Max Age 20 秒、Forward Delay 15 秒。收敛时间长正是 STP 的痛点，RSTP 用 Proposal/Agreement 机制缩短了它。'},
+{m:'二层交换',t:'单选',q:'STP 选举根桥时，首先比较的参数是？',o:['桥 MAC 地址','桥优先级','端口 ID','端口开销'],a:[1],e:'根桥选举先比桥优先级（Bridge Priority，默认 32768，步长 4096），优先级相同时再比桥 MAC，越小越优。'},
+{m:'二层交换',t:'单选',q:'RSTP 中处于 Discarding 状态的端口，其行为是？',o:['不转发也不学习 MAC','只学习 MAC 不转发','既学习也转发','只接收 BPDU'],a:[0],e:'RSTP 把 STP 的 Disabled/Blocking/Listening 合并为 Discarding：既不转发用户流量也不学习 MAC 地址，只处理 BPDU。'},
+{m:'二层交换',t:'多选',q:'关于 Eth-Trunk 链路聚合，说法正确的有？',o:['可以增加链路带宽','可以提供链路冗余','LACP 模式下需要两端协商','成员口的速率和双工模式必须一致'],a:[0,1,2,3],e:'四项都正确。Eth-Trunk 成员接口的速率、双工、流控等物理属性必须一致，否则无法加入聚合组。'},
+{m:'二层交换',t:'单选',q:'MSTP 相比 RSTP 的核心优势是？',o:['收敛更快','支持多实例，实现不同 VLAN 的负载分担','不需要根桥','可以跨厂商互通'],a:[1],e:'MSTP 通过多实例（Instance）把不同 VLAN 映射到不同生成树，既能负载分担又能避免环路，是园区网的标准做法。'},
+{m:'二层交换',t:'单选',q:'接口配置命令 port link-type trunk 之后，若要放行 VLAN 10、20，应执行？',o:['port trunk allow-pass vlan 10 20','vlan 10 20','port trunk pvid vlan 10 20','port default vlan 10'],a:[0],e:'Trunk 口用 port trunk allow-pass vlan 放行 VLAN；port trunk pvid vlan 设置的是 PVID（仅一个值）。'},
+{m:'二层交换',t:'判断',q:'端口隔离（port-isolate）可以实现同一 VLAN 内用户之间的二层报文隔离。',o:['正确','错误'],a:[0],e:'端口隔离常用于酒店、宿舍等场景，隔离组内端口之间不能互通，但仍可访问上行网关，比划分多个 VLAN 更省地址资源。'},
+{m:'二层交换',t:'单选',q:'DHCP Snooping 的主要作用是？',o:['防止私接 DHCP 服务器，并生成可信的用户 MAC/IP 绑定表','加速 DHCP 地址分配','实现 DHCP 跨网段中继','对 DHCP 报文加密'],a:[0],e:'DHCP Snooping 通过把接口分为信任/非信任，丢弃非信任口的 DHCP Offer/ACK，防止仿冒 DHCP 服务器；同时监听生成绑定表，供 IPSG 使用。'},
+{m:'二层交换',t:'单选',q:'交换机上查看 MAC 地址表的命令是？',o:['display mac-address','display arp','display fdb table','display vlan'],a:[0],e:'display mac-address 查看 MAC 地址表；display arp 看 ARP 表；display vlan 看 VLAN 及成员端口信息。'},
+
+/* ---------- 三、路由 · OSPF ---------- */
+{m:'路由 OSPF',t:'单选',q:'OSPF 协议号是？它直接封装在 IP 之上，属于哪类协议？',o:['88；单播路由协议','89；IP 层之上的路由协议','520；距离矢量协议','179；路径矢量协议'],a:[1],e:'OSPF 协议号 89，属于链路状态（Link State）路由协议，直接封装在 IP 报文之上。88 是 EIGRP，520 是 RIP，179 是 BGP。'},
+{m:'路由 OSPF',t:'多选',q:'OSPF 的五种报文类型包括？',o:['Hello','DD（Database Description）','LSR / LSU / LSAck','Update / Keepalive'],a:[0,1,2],e:'OSPF 报文共五种：Hello、DD、LSR、LSU、LSAck。Update/Keepalive 是 BGP 的报文。'},
+{m:'路由 OSPF',t:'单选',q:'OSPF 邻居建立过程中，ExStart 状态的主要任务是？',o:['交换 Hello 协商参数','选举主从路由器，确定 DD 报文的序号','泛洪 LSA','计算最短路径树'],a:[1],e:'ExStart 阶段双方通过 DD 报文比较 Router-ID，大者为 Master，从而确定 DD 序列号；随后进入 Exchange 交换 LSA 头部摘要。'},
+{m:'路由 OSPF',t:'单选',q:'广播网络中，OSPF DR 的选举结果由什么决定？',o:['Router-ID 越大越优，先比优先级','接口优先级越大越优，优先级相同比 Router-ID 大者','带宽越大越优','IP 地址越小越优'],a:[1],e:'先比接口 DR 优先级（默认 1，范围 0-255，0 表示不参选），优先级相同再比 Router-ID，越大越优。'},
+{m:'路由 OSPF',t:'单选',q:'描述区域内路由器（Router LSA）的类型号是？',o:['Type 1','Type 2','Type 3','Type 5'],a:[0],e:'Type1 Router LSA（区域内）、Type2 Network LSA（由 DR 产生）、Type3 Summary LSA（区域间）、Type4 ASBR Summary、Type5 External LSA、Type7 NSSA 外部。'},
+{m:'路由 OSPF',t:'单选',q:'Stub 区域的特点是？',o:['不允许 Type5 LSA 进入，用缺省路由访问外部','允许所有 LSA 泛洪','不能有 ABR','只传 Type7 LSA'],a:[0],e:'Stub 区域拒绝 Type4/Type5 LSA，ABR 向区域内下发一条默认路由。Totally Stub 进一步连 Type3 也过滤，NSSA 则允许本区域内引入外部路由并以 Type7 表达。'},
+{m:'路由 OSPF',t:'判断',q:'OSPF 虚连接（Virtual Link）必须穿越一个非骨干区域建立。',o:['正确','错误'],a:[0],e:'虚连接用于修复不连续的骨干区域，或让没有物理连接到 Area 0 的区域接入骨干区域，必须穿过一个非骨干区域（transit area）建立。'},
+{m:'路由 OSPF',t:'单选',q:'接口带宽为 100 Mbit/s 时，OSPF 缺省开销（Cost）为？',o:['1','10','100','65535'],a:[0],e:'OSPF 参考带宽缺省 100 Mbit/s，Cost = 参考带宽/接口带宽 = 100/100 = 1。带宽大于等于 100M 开销都为 1，因此实际部署中常需手动调整参考带宽。'},
+{m:'路由 OSPF',t:'多选',q:'OSPFv3 与 OSPFv2 的主要差异包括？',o:['OSPFv3 基于链路运行，与接口网段无关','OSPFv3 使用链路本地地址建立邻居','OSPFv3 报文头部去掉了认证字段，改用 IPsec','OSPFv3 不支持多区域'],a:[0,1,2],e:'OSPFv3 支持多区域；它的邻居关系基于链路本地地址建立，报文头部去掉了 OSPFv2 的认证字段，认证交给 IPv6 的 IPsec 承担。'},
+{m:'路由 OSPF',t:'单选',q:'查看设备 OSPF 邻居关系的命令是？',o:['display ospf peer','display ospf lsdb','display ospf interface','display ospf routing'],a:[0],e:'display ospf peer 看邻居/邻接状态；display ospf lsdb 看链路状态数据库；display ospf interface 看运行 OSPF 的接口信息。'},
+{m:'路由 OSPF',t:'单选',q:'OSPF 中若两台路由器接口的 Hello 时间间隔不一致，后果是？',o:['仍能建立 FULL 邻接','无法建立邻居关系','只有 Master 能发 Hello','进入 2-Way 后卡住'],a:[1],e:'Hello 间隔、Dead 间隔、区域 ID、认证、MTU（DD 交互时）等参数必须一致，否则邻居关系建立不了。这是排错的第一步。'},
+
+/* ---------- 四、路由 · BGP ---------- */
+{m:'路由 BGP',t:'单选',q:'BGP 使用的 TCP 端口号是？',o:['169','179','389','520'],a:[1],e:'BGP 基于 TCP 179 建立对等体。因为建立在 TCP 之上，只要 IP 可达就能建邻居，无需直连，这是 BGP 能承载全球路由的基础。'},
+{m:'路由 BGP',t:'多选',q:'BGP 的报文类型包括？',o:['Open','Keepalive','Update','Notification'],a:[0,1,2,3],e:'BGP 共四种报文：Open（建邻居协商参数）、Keepalive（维持邻居，缺省 60 秒）、Update（携带路由与路径属性）、Notification（差错通告）。'},
+{m:'路由 BGP',t:'单选',q:'BGP 邻居状态机中，收到 Open 报文并回复 Keepalive 后进入的状态是？',o:['Idle','Connect','OpenSent','Established'],a:[3],e:'状态流转：Idle → Connect → Active → OpenSent → OpenConfirm → Established。Established 才是邻居建立的标志，此时才开始交互路由。'},
+{m:'路由 BGP',t:'单选',q:'BGP 选路时，在其他条件相同的情况下，通常优先选择？',o:['AS_PATH 最短的','MED 最大的','Local_Pref 最小的','Origin 为 Incomplete 的'],a:[0],e:'BGP 选路顺序的关键几档：Preferred-Value → Local_Pref → 本地始发 → AS_PATH 短 → Origin → MED 小 → EBGP 优于 IBGP → 到下一跳 IGP 开销小。'},
+{m:'路由 BGP',t:'单选',q:'Local_Pref 属性的作用范围是？',o:['只在本地有效，不传给任何邻居','在 IBGP 对等体间传递，用于影响出 AS 的流量','只在 EBGP 之间传递','通过 EBGP 传播到相邻 AS'],a:[1],e:'Local_Pref 只在 IBGP 对等体之间传递，用来告诉本 AS 内的路由器「从哪个出口离开本 AS 更好」，是控制出向流量的主要手段。'},
+{m:'路由 BGP',t:'单选',q:'BGP 路由反射器（RR）解决的核心问题是？',o:['EBGP 邻居过多','IBGP 全互联导致的连接数平方增长','AS_PATH 环路','路由聚合'],a:[1],e:'IBGP 要求全互联，n 台设备需要 n(n-1)/2 条会话。RR 通过反射规则（从客户机学到的路由反射给其他客户机和非客户机）打破这一限制。'},
+{m:'路由 BGP',t:'多选',q:'BGP 通过哪些手段防止路由环路？',o:['AS_PATH 中携带本 AS 号，收到含自身 AS 号的路由丢弃','IBGP 水平分割：从 IBGP 学到的路由不传给其他 IBGP 邻居','Origin 属性标记','通过 MED 比对'],a:[0,1],e:'EBGP 层面靠 AS_PATH 防环，IBGP 层面靠水平分割（以及 RR 的 Cluster_List、联邦）。Origin 和 MED 都是选路属性，不防环。'},
+{m:'路由 BGP',t:'判断',q:'BGP 的 Next_Hop 属性在 EBGP 与 IBGP 中的处理方式相同。',o:['正确','错误'],a:[1],e:'EBGP 学到的路由传给 IBGP 邻居时，Next_Hop 默认保持不变（除非配置 peer next-hop-local），这会造成下一跳不可达，因此常需在边界设备上配置 next-hop-local。'},
+{m:'路由 BGP',t:'单选',q:'配置 BGP 对等体组（Peer Group）的主要好处是？',o:['减少配置量，提高邻居建立效率','加快路由收敛','自动聚合路由','避免 AS_PATH 环路'],a:[0],e:'对等体组让具有相同策略的邻居共用一份配置，既简化配置又减少设备处理开销。'},
+{m:'路由 BGP',t:'单选',q:'查看 BGP 邻居状态概要的命令是？',o:['display bgp peer','display bgp routing-table','display bgp vpnv4 all peer','display current-configuration | include bgp'],a:[0],e:'display bgp peer 显示各对等体状态（Established 为正常）、收发包计数与上次重置时间；display bgp routing-table 看 BGP 路由表。'},
+
+/* ---------- 五、IPv6 ---------- */
+{m:'IPv6',t:'单选',q:'IPv6 报文的固定首部长度是？',o:['20 字节','32 字节','40 字节','64 字节'],a:[2],e:'IPv6 首部固定 40 字节，去掉了校验和、分片等字段，改由扩展首部实现，转发效率更高。'},
+{m:'IPv6',t:'单选',q:'FE80::/10 属于哪一类地址？',o:['全球单播地址','链路本地地址','唯一本地地址','组播地址'],a:[1],e:'FE80::/10 是链路本地地址，只在同一链路上有效，用于邻居发现和路由协议建邻；FC00::/7 是唯一本地地址（类似 IPv4 私网地址）。'},
+{m:'IPv6',t:'单选',q:'下列哪个地址是 IPv6 组播地址？',o:['2001::1','FC00::1','FF02::1','FE80::1'],a:[2],e:'FF00::/8 为组播地址段，FF02::1 表示链路上所有节点。2001:: 全球单播，FC00:: 唯一本地，FE80:: 链路本地。'},
+{m:'IPv6',t:'多选',q:'NDP（邻居发现协议）用到的报文包括？',o:['路由请求 RS / 路由通告 RA','邻居请求 NS / 邻居通告 NA','重定向 Redirect','ARP Request / Reply'],a:[0,1,2],e:'NDP 用 ICMPv6 的五种报文实现地址解析、地址自动配置、重复地址检测和重定向。IPv6 不再使用 ARP，其功能由 NS/NA 承担。'},
+{m:'IPv6',t:'单选',q:'IPv6 无状态地址自动配置（SLAAC）中，主机地址的后 64 位通常由什么生成？',o:['DHCPv6 服务器分配','EUI-64 由 MAC 地址扩展生成','随机数（仅随机）','网关下发'],a:[1],e:'EUI-64 在 MAC 地址中间插入 FFFE 并翻转第 7 位（U/L 位）生成接口标识符，前 64 位由 RA 通告的前缀提供。也可配置随机生成以保护隐私。'},
+{m:'IPv6',t:'单选',q:'IPv6 地址 2001:DB8:0:0:0:0:0:1 可以简写为？',o:['2001:DB8::1','2001:DB8:0::1','2001::DB8::1','2001:DB8:0:0:0:0:1'],a:[0],e:'连续的全零组可以用双冒号 :: 替代一次，且一个地址中只能出现一次 ::。故 2001:DB8::1 正确；2001::DB8::1 出现两次 :: 属于非法写法。'},
+{m:'IPv6',t:'判断',q:'IPv6 中 OSPFv3 使用链路本地地址建立邻居关系。',o:['正确','错误'],a:[0],e:'OSPFv3 的 Hello 报文源地址就是接口的链路本地地址，报文需要指定出接口，这也是 OSPFv3 与 OSPFv2 的重要差异。'},
+{m:'IPv6',t:'单选',q:'在华为设备上开启接口 IPv6 功能的命令是？',o:['ipv6 enable','ipv6 address auto','ipv6','ip address ipv6'],a:[2],e:'接口视图下执行 ipv6 命令即开启接口的 IPv6 转发能力，之后再用 ipv6 address 配置地址。'},
+
+/* ---------- 六、DCN / VXLAN ---------- */
+{m:'DCN VXLAN',t:'单选',q:'VXLAN 使用的封装方式是？',o:['直接封装在以太网上','封装在 UDP 报文中，目的端口 4789','封装在 TCP 中，端口 179','封装在 GRE 中'],a:[1],e:'VXLAN 把二层帧封装进 UDP（目的端口 4789，缺省）/IP 中传输，因此可以跨越三层网络传递二层报文，实现大二层组网。'},
+{m:'DCN VXLAN',t:'单选',q:'VXLAN 的 VNI 有多少位？最多支持多少个二层网段？',o:['12 位，4094 个','16 位，65536 个','24 位，约 1600 万个','32 位，约 42 亿个'],a:[2],e:'VXLAN 用 24 位 VNI 标识租户/网段，最多约 1600 万个，远超 VLAN 的 12 位 4094 个，这是它用于数据中心多租户场景的关键原因。'},
+{m:'DCN VXLAN',t:'单选',q:'VXLAN 中 VTEP 的作用是？',o:['VXLAN 隧道的端点，负责封装与解封装','负责分配 VNI','负责 ARP 代理','负责路由汇聚'],a:[0],e:'VTEP（VXLAN Tunnel End Point）是隧道的起点和终点，完成原始报文的 VXLAN 封装与解封装。在华为设备上由 NVE 接口承载。'},
+{m:'DCN VXLAN',t:'单选',q:'BGP EVPN 中，用于通告主机 MAC/IP 信息的路由类型是？',o:['Type 1','Type 2','Type 3','Type 5'],a:[1],e:'Type1 以太网自动发现路由（ESI）、Type2 MAC/IP 通告路由、Type3 包含多播以太网标签的路由（VTEP 自动发现）、Type4 以太网段路由、Type5 IP 前缀路由（用于三层互通）。'},
+{m:'DCN VXLAN',t:'多选',q:'关于 VXLAN 网关（VBDIF / 集中式、分布式网关）说法正确的有？',o:['集中式网关流量集中，可能成为瓶颈','分布式网关把网关能力下沉到每台 VTEP','分布式网关需要 BGP EVPN 传递主机路由','VXLAN 不支持三层互通'],a:[0,1,2],e:'VXLAN 当然支持三层互通。集中式网关便于管理但有流量绕行问题；分布式网关在每个 VTEP 上都建网关，配合 BGP EVPN Type2 路由实现最优转发，是当前主流方案。'},
+{m:'DCN VXLAN',t:'判断',q:'VXLAN 可以不依赖 EVPN，仅靠泛洪或组播方式传递二层报文。',o:['正确','错误'],a:[0],e:'VXLAN 早期用组播或头端复制（泛洪）方式做 BUM 流量转发，后来 BGP EVPN 成为控制面标准方案，避免了泛洪带来的扩展性问题。'},
+{m:'DCN VXLAN',t:'单选',q:'VXLAN 中 BUM 流量指的是？',o:['广播、未知单播、组播流量','带宽拥塞流量','双向用户报文','备份链路流量'],a:[0],e:'BUM = Broadcast, Unknown unicast, Multicast。这类流量在 VXLAN 中需要特殊处理（泛洪或通过 EVPN 抑制），是数据中心网络设计的重点。'},
+{m:'DCN VXLAN',t:'单选',q:'在华为数据中心交换机上，承载 VXLAN 功能的逻辑接口是？',o:['VLANIF','NVE 接口','Eth-Trunk','Loopback'],a:[1],e:'NVE（Network Virtualization Edge）接口是 VXLAN 的承载接口，在其下配置源 VTEP 地址（source）、VNI 与对端 VTEP 列表。'},
+
+/* ---------- 七、安全 / 防火墙 ---------- */
+{m:'安全与防火墙',t:'单选',q:'华为 USG 系列防火墙中，缺省安全区域 Local 的优先级是多少？',o:['85','100','50','5'],a:[1],e:'四个缺省区域优先级：Local 100（设备本身）、Trust 85、DMZ 50、Untrust 5。优先级高的可以主动访问优先级低的，反之需要策略放行。'},
+{m:'安全与防火墙',t:'单选',q:'防火墙安全策略（Security Policy）中，决定报文是否被检查的顺序是？',o:['按策略编号从小到大匹配，命中即执行','按策略编号从大到小匹配','随机匹配','按优先级字段匹配'],a:[0],e:'安全策略按序号从小到大自上而下匹配，命中一条即执行其动作（permit/deny），不再继续向下匹配，因此策略排序非常关键。'},
+{m:'安全与防火墙',t:'多选',q:'关于防火墙会话表（Session Table），说法正确的有？',o:['只有首包才逐条匹配安全策略','后续报文直接命中会话表转发，效率更高','会话表有老化时间，长时间无流量会被删除','UDP 会话也依赖会话表'],a:[0,1,2,3],e:'四项都正确。这种「首包建会话、后续快速转发」的机制是状态检测防火墙的核心。'},
+{m:'安全与防火墙',t:'单选',q:'下列哪一项可以将内部服务器的私网地址映射为公网地址，供外网用户访问？',o:['源 NAT（Easy-IP）','NAT Server（目的 NAT）','NAPT','策略路由'],a:[1],e:'NAT Server 属于目的 NAT，把公网 IP:端口 与内网服务器 IP:端口 做映射，供外部主动访问；源 NAT 是内网访问外网时做地址转换。'},
+{m:'安全与防火墙',t:'单选',q:'ACL 规则 rule 5 permit ip source 192.168.1.0 0.0.0.255 中，通配符的作用是？',o:['指定子网掩码','指定需要匹配的位数，0 表示必须匹配','指定端口范围','指定优先级'],a:[1],e:'华为 ACL 的通配符（wildcard）中 0 表示该位必须严格匹配，1 表示可以任意。0.0.0.255 对应掩码 255.255.255.0，匹配整个 192.168.1.0/24 网段。'},
+{m:'安全与防火墙',t:'单选',q:'防火墙双机热备中，负责统一管理主备设备状态与切换的协议是？',o:['VRRP','VGMP','HRP','BFD'],a:[1],e:'VGMP（华为私有）统一管理所有 VRRP 备份组的状态，保证主备设备整体切换；HRP 负责两台设备之间配置和会话表的实时同步；VRRP 只解决单个网关的主备。'},
+{m:'安全与防火墙',t:'多选',q:'防火墙双机热备一致性检查通常包括哪些内容？',o:['安全策略配置','NAT 策略','会话表','接口地址配置'],a:[0,1,2,3],e:'主备设备必须保证配置一致，否则业务切换后会中断。HRP 会同步配置、会话表、Server-Map 表项等；接口地址的规划也要对称，避免切换后地址冲突或不一致。'},
+{m:'安全与防火墙',t:'单选',q:'下列哪一项能够防止 IP 源地址欺骗攻击？',o:['在边界路由器上启用到特定 IP 的路由','在边界设备上启用源 IP 地址过滤（如 uRPF）','在防火墙上过滤特定端口','关闭 ICMP 响应'],a:[1],e:'源地址欺骗的本质是伪造源 IP，因此要在边界做源地址校验（uRPF 单播反向路径转发）或静态 ACL 过滤，丢弃源地址不属于该网段的报文。'},
+{m:'安全与防火墙',t:'单选',q:'Teardrop、Ping of Death、SYN Flood 这类攻击属于？',o:['应用层攻击','单包攻击 / DoS 攻击','病毒传播','社会工程学攻击'],a:[1],e:'这类畸形包或泛洪攻击属于单包攻击或 DoS/DDoS 攻击。防火墙通过特征库匹配、首包丢弃、源探测限流等技术防护。'},
+{m:'安全与防火墙',t:'判断',q:'防火墙安全区域中，Untrust 区域可以直接访问 Trust 区域而不需要配置安全策略。',o:['正确','错误'],a:[1],e:'低优先级区域访问高优先级区域必须显式配置安全策略放行。缺省情况下这类流量会被丢弃，这也是防火墙的默认安全姿态。'},
+{m:'安全与防火墙',t:'单选',q:'在 USG 防火墙上查看会话表的命令是？',o:['display firewall session table','display firewall session statistics','display nat session','display security-policy'],a:[0],e:'display firewall session table 查看会话表；display firewall session table verbose 可看详细五元组与字节数；display security-policy 查看策略相关状态。'},
+
+/* ---------- 八、VPN ---------- */
+{m:'VPN 与加密',t:'单选',q:'IPsec VPN 的 IKE 阶段一（Phase 1）建立的是？',o:['IPsec SA','IKE SA（ISAKMP SA）','TCP 连接','SSL 会话'],a:[1],e:'阶段一建立 IKE SA（也叫 ISAKMP SA），用于保护后续协商过程；阶段二在该通道保护下建立一对 IPsec SA，用于保护实际数据流。'},
+{m:'VPN 与加密',t:'单选',q:'IPsec 中既提供加密又提供认证的协议是？',o:['AH','ESP','GRE','L2TP'],a:[1],e:'AH 只做认证（完整性 + 源认证），不加密；ESP 既加密又认证，因此实际部署几乎都用 ESP。GRE 本身不提供加密。'},
+{m:'VPN 与加密',t:'单选',q:'IPsec 隧道模式与传输模式的区别是？',o:['隧道模式重新封装新的 IP 头，传输模式保留原 IP 头','传输模式更安全','隧道模式不能跨网段','两者完全等价'],a:[0],e:'传输模式在原 IP 头和载荷之间插入 AH/ESP，只保护载荷，适合端到端；隧道模式用新的 IP 头封装整个原报文，适合网关到网关（站点互联），是 VPN 的常用模式。'},
+{m:'VPN 与加密',t:'多选',q:'IKE 阶段一的对等体认证方式包括？',o:['预共享密钥（Pre-shared Key）','数字证书（RSA 签名）','口令认证（PAP）','短信验证'],a:[0,1],e:'IKE 用预共享密钥或数字证书验证对端身份。PAP 是 PPP 的认证方式，与 IKE 无关。'},
+{m:'VPN 与加密',t:'单选',q:'GRE 协议的 IP 协议号是？',o:['47','50','51','89'],a:[0],e:'GRE 协议号 47，ESP 是 50，AH 是 51。GRE 可承载组播/广播和多协议报文，但明文传输，常与 IPsec 组合使用。'},
+{m:'VPN 与加密',t:'单选',q:'IPsec 中用于定义「哪些流量需要被保护」的机制是？',o:['ACL（感兴趣流）','路由策略','策略路由','MQC'],a:[0],e:'通过 ACL 匹配感兴趣流（interesting traffic），只有命中 ACL 的报文才触发 IPsec 加解密与隧道建立，其余报文正常转发。'},
+{m:'VPN 与加密',t:'判断',q:'AH 协议因为在认证时覆盖了源 IP 地址，所以不能与 NAT 同时使用。',o:['正确','错误'],a:[0],e:'AH 的认证范围覆盖 IP 首部（含源地址），NAT 修改地址后校验会失败，因此 AH 无法穿过 NAT。ESP 在隧道模式下可以配合 NAT-T 使用。'},
+{m:'VPN 与加密',t:'单选',q:'SSL VPN 相比 IPsec VPN 的主要优势是？',o:['无需安装客户端，浏览器即可接入，适合移动办公','加密强度更高','只支持站点互联','不需要认证'],a:[0],e:'SSL VPN 基于浏览器，终端免安装、穿透性好，适合出差人员访问内部资源；IPsec 更适合固定的站点到站点互联。'},
+
+/* ---------- 九、WLAN ---------- */
+{m:'WLAN',t:'单选',q:'CAPWAP 协议使用的端口号是？',o:['UDP 5246（控制）/ 5247（数据）','TCP 5246 / 5247','UDP 4789','TCP 179'],a:[0],e:'CAPWAP 控制隧道用 UDP 5246，数据隧道用 UDP 5247。AP 通过 CAPWAP 与 AC 建立隧道，接受 AC 下发配置。'},
+{m:'WLAN',t:'单选',q:'AP 与 AC 处于不同三层网络时，AP 发现 AC 的常用方式是？',o:['二层广播','DNS 解析或 DHCP Option 43','手动指定 AP 的 IP','ARP 探测'],a:[1],e:'跨三层场景下广播无法到达，因此通过 DHCP Option 43 下发 AC 地址列表，或通过 DNS 解析 AC 域名来发现 AC。'},
+{m:'WLAN',t:'多选',q:'WLAN 的转发方式包括？',o:['隧道转发（集中转发）','直接转发（本地转发）','混合转发','广播转发'],a:[0,1],e:'隧道转发把用户数据封装到 CAPWAP 数据隧道送到 AC 再转发（便于管控但 AC 压力大）；直接转发让业务流在 AP 本地直接转发，AC 只管理控制面（常用在大规模组网）。'},
+{m:'WLAN',t:'单选',q:'AP 上线的流程中，AP 获取 IP 地址后紧接着一般做什么？',o:['直接转发用户流量','发现并连接 AC','建立用户会话','进行 Portal 认证'],a:[1],e:'典型流程：AP 上电 → 获取 IP → 发现 AC（DHCP Option 43/DNS/广播）→ 与 AC 建立 CAPWAP 隧道 → 下载版本与配置 → 正常上线。'},
+{m:'WLAN',t:'单选',q:'WLAN 组网中，AC 的旁挂方式相比直连方式的特点是？',o:['业务流量不经 AC，AC 只负责管理','AC 性能要求更高','必须使用隧道转发','不能支持三层组网'],a:[0],e:'旁挂（旁路）组网时，AC 挂在汇聚/核心侧，只负责 AP 管理，用户流量可走直接转发，减小 AC 压力，适合已有成熟网络的场景。'},
+{m:'WLAN',t:'单选',q:'Wi-Fi 6 对应的 IEEE 标准是？',o:['802.11n','802.11ac','802.11ax','802.11be'],a:[2],e:'Wi-Fi 4 = 802.11n，Wi-Fi 5 = 802.11ac，Wi-Fi 6 = 802.11ax，Wi-Fi 7 = 802.11be。Wi-Fi 6 的关键技术包括 OFDMA、MU-MIMO、BSS Coloring、TWT 等。'},
+{m:'WLAN',t:'多选',q:'WLAN 中常见的 Spoof 欺骗攻击报文包括？',o:['广播型去关联帧 Disassociation','广播型去认证帧 Deauthentication','单播型数据帧','探测请求帧 Probe Request'],a:[0,1],e:'攻击者伪造广播型的去认证/去关联帧（源地址冒充 AP），让所有终端误以为被 AP 踢下线，形成拒绝服务。防护手段包括 802.11w 管理帧保护、WIDS/WIPS 检测。'},
+{m:'WLAN',t:'判断',q:'在 WLAN 组网中，AC 只能管理同网段的 AP。',o:['正确','错误'],a:[1],e:'AC 可以跨三层管理 AP，前提是 AP 与 AC 之间路由可达，并通过 DHCP Option 43 或 DNS 方式完成 AC 发现。'},
+
+/* ---------- 十、Linux / openEuler ---------- */
+{m:'Linux与openEuler',t:'单选',q:'命令 chmod 755 file 执行后，文件属主的权限是？',o:['只读','读+写+执行','读+写','读+执行'],a:[1],e:'7 = 4(读)+2(写)+1(执行)，即 rwx。5 = 4+1 即 r-x，因此属主可读可写可执行，同组用户和其他用户可读可执行。'},
+{m:'Linux与openEuler',t:'单选',q:'查看系统当前所有运行进程的实时资源占用情况，最常用的命令是？',o:['ls -l','top','df -h','netstat'],a:[1],e:'top 动态显示进程的 CPU、内存占用并可交互排序；ps 是静态快照；df 看磁盘空间；netstat/ss 看网络连接。'},
+{m:'Linux与openEuler',t:'单选',q:'openEuler 中用于管理 systemd 服务（如启动、停止、设置开机自启）的命令是？',o:['service','systemctl','chkconfig','init'],a:[1],e:'systemctl start/stop/restart/enable/status 是 systemd 系统的标准管理方式，openEuler、CentOS 7+、Ubuntu 16+ 都用它。'},
+{m:'Linux与openEuler',t:'单选',q:'openEuler 中安装软件包使用的包管理器是？',o:['apt','yum/dnf','pip','zypper'],a:[1],e:'openEuler 使用 dnf（向下兼容 yum）管理 rpm 软件包，如 dnf install / dnf update / rpm -qa | grep 查询已装包。apt 是 Debian 系。'},
+{m:'Linux与openEuler',t:'多选',q:'关于 Linux 中软链接与硬链接，说法正确的有？',o:['硬链接与原文件共享同一个 inode','硬链接不能跨文件系统创建','软链接是一个指向原文件路径的独立文件','删除原文件后硬链接立即失效'],a:[0,1,2],e:'删除原文件后，硬链接仍可访问数据（引用计数减 1，计数为 0 才真正删除数据），所以第四项错误。软链接指向路径，原文件删除后软链接会变成断链。'},
+{m:'Linux与openEuler',t:'单选',q:'查看系统中文件系统挂载与磁盘使用情况的命令是？',o:['lsblk -f','df -h','fdisk -l','du -sh'],a:[1],e:'df -h 显示各已挂载文件系统的容量与使用率；lsblk/fdisk -l 看块设备与分区；du -sh 统计目录所占空间。'},
+{m:'Linux与openEuler',t:'单选',q:'命令 ip addr show 的作用是？',o:['查看路由表','查看网卡接口的 IP 地址信息','查看 ARP 表','配置 DNS'],a:[1],e:'ip addr（简写 ip a）查看接口 IP，ip route 查路由表，ip neigh 查邻接表（ARP）。ip 命令已取代旧的 ifconfig/route。'},
+{m:'Linux与openEuler',t:'单选',q:'openEuler 中要修改主机名并使其永久生效，应使用？',o:['hostname newname','hostnamectl set-hostname newname','echo newname > /etc/hosts','ifconfig newname'],a:[1],e:'hostnamectl set-hostname 会写入系统配置并立即生效；hostname 命令只改当前运行时的名称，重启会失效。'},
+{m:'Linux与openEuler',t:'多选',q:'下列关于 openEuler 的说法，正确的有？',o:['openEuler 是华为主导开源的 Linux 发行版','openEuler 采用 dnf/rpm 包管理体系','openEuler 只支持 x86 架构','openEuler 支持鲲鹏等 ARM 架构'],a:[0,1,3],e:'openEuler 支持 x86_64、ARM64（鲲鹏）、RISC-V 等多种架构，是国产化替代与信创场景的主力操作系统之一，并非只支持 x86。'},
+{m:'Linux与openEuler',t:'单选',q:'查找文件内容中包含指定字符串的行，应使用哪个命令？',o:['find','grep','locate','whereis'],a:[1],e:'grep 在文件内容中按模式搜索文本；find 按名称、大小、时间等属性查找文件；locate 依赖数据库按文件名查找。'},
+{m:'Linux与openEuler',t:'判断',q:'Linux 中 root 用户拥有的权限高于普通用户，可以修改任何文件（除非文件系统做了额外保护）。',o:['正确','错误'],a:[0],e:'root 是超级用户，绕过普通权限检查，可读写任何文件、管理进程与设备。生产中通常强调最小权限原则，避免长期以 root 操作。'},
+
+/* ---------- 十一、openGauss ---------- */
+{m:'openGauss',t:'单选',q:'openGauss 自带并用于连接数据库的命令行客户端是？',o:['mysql','gsql','psql','sqlplus'],a:[1],e:'openGauss 提供 gsql 客户端，用法类似 PostgreSQL 的 psql，如 gsql -d postgres -p 15000 -U omm。'},
+{m:'openGauss',t:'单选',q:'openGauss 集群管理的统一工具是？',o:['gs_om','gs_ctl','gs_dump','gs_guc'],a:[0],e:'gs_om 用于集群级操作（-t start/stop/status/restart）；gs_ctl 用于单机/主备实例的启停与主备切换；gs_dump 是逻辑备份；gs_guc 用于修改参数。'},
+{m:'openGauss',t:'单选',q:'openGauss 缺省安装运行数据库的操作系统用户是？',o:['root','omm','gauss','pg'],a:[1],e:'出于安全考虑，openGauss 不允许以 root 运行，必须使用安装时指定的专用用户（缺省 omm）及对应用户组（如 dbgrp）。'},
+{m:'openGauss',t:'多选',q:'openGauss 支持的安全特性包括？',o:['全密态数据库（数据在客户端加解密）','防篡改账本数据库','行级访问控制','三权分立（审计/管理/安全管理员分离）'],a:[0,1,2,3],e:'这四项都是 openGauss 面向企业级安全的重要能力，也是基础软件赛道考纲中明确点到的内容（集群管理、全密态、防篡改、运维监控）。'},
+{m:'openGauss',t:'单选',q:'在 openGauss 中创建用户并授予权限，正确的语法方向是？',o:['CREATE USER 用户名 WITH PASSWORD 密码','ADD USER 用户名','INSERT USER 用户名','NEW USER 用户名'],a:[0],e:'标准写法如 CREATE USER joe WITH PASSWORD Abc12345，再用 GRANT 授予库、表、模式级权限。openGauss 保留 PostgreSQL 的权限模型。'},
+{m:'openGauss',t:'单选',q:'查看 openGauss 集群运行状态的命令是？',o:['gs_om -t status','gs_om -t start','gs_ctl status','systemctl status gauss'],a:[0],e:'gs_om -t status --detail 可查看各实例状态、数据目录与端口，是运维排查的第一步。'},
+{m:'openGauss',t:'单选',q:'openGauss 与 openEuler 的默认监听端口（安装缺省建议值）分别是？',o:['1521 与 3306','15000 与 22','5432 与 80','8080 与 443'],a:[1],e:'openGauss 常见安装端口为 15000；22 是 SSH 端口，用于登录 openEuler 服务器做部署与维护。'},
+{m:'openGauss',t:'多选',q:'关于 openGauss 主备（HA）部署，说法正确的有？',o:['主备实例之间同步数据，备机可承担只读业务','主备切换可用 gs_ctl switchover','数据同步方式有同步与异步（可用 quorum 控制）','主备结构不需要共享存储'],a:[0,1,2,3],e:'openGauss 主备基于日志同步，不依赖共享存储；可以配置同步/异步复制以及最大可用模式（quorum），保证数据可靠性与可用性的平衡。'},
+{m:'openGauss',t:'单选',q:'openGauss 中用于逻辑备份导出数据的工具是？',o:['gs_basebackup','gs_dump','gs_restore','tar'],a:[1],e:'gs_dump 导出逻辑数据（SQL/自定义格式），gs_restore 恢复；gs_basebackup 做物理全量备份。两者用途不同，考纲里都会涉及。'},
+{m:'openGauss',t:'判断',q:'openGauss 支持在创建表时指定加密选项，实现数据在数据库侧加密存储。',o:['正确','错误'],a:[0],e:'这正是「全密态」能力的体现：可以在建表或列级指定加密，数据以密文形式存储，密钥由客户端掌控，DBA 也无法直接看到明文。'},
+{m:'openGauss',t:'单选',q:'openGauss 中要修改数据库运行参数（如最大连接数），推荐使用的工具是？',o:['gs_guc','gs_om','gs_dump','vi 直接改文件并重启'],a:[0],e:'gs_guc set/reload 是官方推荐方式，会校验参数合法性并同步到配置文件，比直接改 postgresql.conf 更安全；reload 不重启即可生效的参数可直接生效。'},
+{m:'openGauss',t:'单选',q:'下列哪个 SQL 语句可以创建表空间？',o:['CREATE TABLESPACE','CREATE SPACE','CREATE DATAFILE','MAKE TABLESPACE'],a:[0],e:'CREATE TABLESPACE 名称 RELATIVE LOCATION 路径; 用于把不同表分布到不同磁盘，是数据库性能规划与信创迁移中的常见操作。'},
+
+/* ---------- 十二、鲲鹏 / Kunpeng ---------- */
+{m:'鲲鹏与迁移',t:'单选',q:'鲲鹏处理器所采用的指令集架构是？',o:['x86-64','ARMv8（AArch64）','RISC-V','MIPS'],a:[1],e:'鲲鹏基于 ARMv8 架构（64 位 AArch64），具有多核高并发、能效比高的特点，广泛用于服务器与云计算场景。'},
+{m:'鲲鹏与迁移',t:'单选',q:'把 x86 平台的软件迁移到鲲鹏平台，第一步通常是？',o:['直接拷贝二进制文件运行','确认软件是否使用架构相关汇编或编译型语言，评估可移植性','重装操作系统','更换数据库'],a:[1],e:'迁移前需做评估：C/C++/汇编等编译型代码需要重新编译适配；Java/Python 等解释型语言跨架构差别较小。这是「应用迁移」的标准流程第一步。'},
+{m:'鲲鹏与迁移',t:'多选',q:'鲲鹏性能优化的常见手段包括？',o:['使用 NUMA 亲和性绑定（如 numactl）','使用针对鲲鹏的编译选项优化','开启 CPU 高性能与网卡多队列','盲目提高线程数到 CPU 核数以上'],a:[0,1,2],e:'线程数超过物理核数不一定更快，反而带来上下文切换开销；NUMA 绑定、专用编译选项、硬件特性调优才是关键手段。'},
+{m:'鲲鹏与迁移',t:'单选',q:'在鲲鹏平台上编译 C/C++ 程序时，启用架构优化的常见编译选项是？',o:['-march=native 或按平台指定 -mcpu','-Os 即可','-static','-g'],a:[0],e:'-march=native 让编译器针对本机 CPU 自动生成优化指令，或显式指定 -mcpu=tsv110 等鲲鹏微架构参数，可显著提升计算密集型程序性能。'},
+{m:'鲲鹏与迁移',t:'单选',q:'鲲鹏生态中，用于从 x86 迁移到鲲鹏的自动化分析/迁移工具是？',o:['Kunpeng DevKit 系列工具','Wireshark','eNSP','Grafana'],a:[0],e:'华为提供 Kunpeng DevKit（含 Porting Advisor 迁移扫描、性能分析工具等），可自动扫描源码中的架构相关代码并给出修改建议，是基础软件赛道提到的工具链。'},
+{m:'鲲鹏与迁移',t:'判断',q:'Java 应用从 x86 迁移到鲲鹏时，因为 JVM 本身已适配，通常无需修改业务代码。',o:['正确','错误'],a:[0],e:'Java 是「一次编写、到处运行」，只要替换为 AArch64 版的 JDK 即可，业务代码通常不用改。但若依赖 JNI 本地库或特定架构的第三方组件，仍需替换适配。'},
+
+/* ---------- 十三、综合与策略 ---------- */
+{m:'综合与策略',t:'单选',q:'第十一届华为ICT大赛实践赛包含哪几个赛项？',o:['网络、云、基础软件','网络、云、基础软件、昇腾AI','网络、安全、云','网络、编程、创新'],a:[0],e:'第十一届实践赛设网络、云、基础软件三个赛项（早前届次曾含昇腾AI赛道）。每名选手只能报名一个赛道，实践赛各赛项之间报名互斥。'},
+{m:'综合与策略',t:'单选',q:'华为ICT大赛实践赛的组队要求是？',o:['2 名学生 + 1 名指导老师','3 名学生 + 1 名指导老师，须来自同一院校','3 至 5 名学生自由组队','个人赛，不设指导老师'],a:[1],e:'实践赛为团队赛，每队 3 名学生 + 1 名指导教师，且学生与教师须来自同一所高校；报名后不得更换队员与指导教师。'},
+{m:'综合与策略',t:'多选',q:'关于省赛资格赛（省初赛）阶段，说法正确的有？',o:['实验环节在 2026 年 9 月 18 日开启','理论考试安排在 2026 年 11 月 14-15 日','校赛结束后各赛道前 50% 可晋级','报名截止后仍可更换队员'],a:[0,1,2],e:'报名后不允许更换队员和指导教师，这是硬性规则。其余三项与第十一届赛事安排一致（具体以各省组委会通知为准）。'},
+{m:'综合与策略',t:'单选',q:'中国总决赛与全球总决赛的考察方式通常是？',o:['纯理论笔试','综合实验（上机实操），全英文赛题','论文答辩','线上选择题'],a:[1],e:'省赛阶段以理论为主，中国总决赛与全球总决赛是 8 小时左右的综合实验，使用 eNSP 或华为云等真实环境，赛题全英文，可使用在线翻译与试卷指定资料。'},
+{m:'综合与策略',t:'判断',q:'华为ICT大赛已被纳入中国高等教育学会「全国普通高校大学生竞赛排行榜」竞赛项目榜单。',o:['正确','错误'],a:[0],e:'2021 年 3 月起该赛事入围该榜单，属于中国高等教育学会认可的含金量较高的高校竞赛项目，这也是它值得投入备赛的原因之一。'},
+{m:'综合与策略',t:'单选',q:'备赛网络赛道时，练实验最该优先使用的工具是？',o:['Packet Tracer','eNSP（华为企业网络仿真平台）','Wireshark','GNS3 + 思科镜像'],a:[1],e:'eNSP 是华为官方模拟器，可模拟 AR 路由器、S 系列交换机、USG 防火墙与 WLAN 设备，命令与真机一致，是备赛与考认证的标准实验环境。'}
+];
+
+/* ================= 关卡元数据（顺序即难度：由简到难） ================= */
+var LEVELS = [
+  {name:'数通基础', icon:'🌐', tag:'网络', diff:'入门', diffCls:'diff-easy'},
+  {name:'二层交换', icon:'🔀', tag:'网络', diff:'入门', diffCls:'diff-easy'},
+  {name:'路由 OSPF', icon:'🧭', tag:'网络', diff:'进阶', diffCls:'diff-mid'},
+  {name:'路由 BGP', icon:'🌍', tag:'网络', diff:'进阶', diffCls:'diff-mid'},
+  {name:'IPv6', icon:'🔢', tag:'网络', diff:'进阶', diffCls:'diff-mid'},
+  {name:'DCN VXLAN', icon:'🏢', tag:'网络', diff:'高级', diffCls:'diff-hard'},
+  {name:'安全与防火墙', icon:'🛡️', tag:'网络', diff:'高级', diffCls:'diff-hard'},
+  {name:'VPN 与加密', icon:'🔐', tag:'网络', diff:'高级', diffCls:'diff-hard'},
+  {name:'WLAN', icon:'📶', tag:'网络', diff:'高级', diffCls:'diff-hard'},
+  {name:'Linux与openEuler', icon:'🐧', tag:'基础软件', diff:'进阶', diffCls:'diff-mid'},
+  {name:'openGauss', icon:'🗄️', tag:'基础软件', diff:'进阶', diffCls:'diff-mid'},
+  {name:'鲲鹏与迁移', icon:'🦅', tag:'基础软件', diff:'进阶', diffCls:'diff-mid'},
+  {name:'综合与策略', icon:'🏁', tag:'冲刺', diff:'冲刺', diffCls:'diff-hard'}
+];
+
+var TRACKS = [
+  {key:'net',  name:'网络赛道', tagCls:'net', range:[0,9]},
+  {key:'sw',   name:'基础软件赛道', tagCls:'sw', range:[9,12]},
+  {key:'final',name:'综合冲刺', tagCls:'final', range:[12,13]}
+];
+
+/* ================= 工具 ================= */
+var KEY = 'ict_gate_v1';
+var LIMIT_EASY = 45, LIMIT_MID = 50, LIMIT_HARD = 60;   // 每题限时（秒），按难度
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t; } return a; }
+
+/* ================= 状态 ================= */
+function load(){
+  try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){ return {}; }
+}
+var S = load();
+if (S.unlocked === undefined) S.unlocked = 1;      // 已解锁到的关卡号（1-based）
+if (!S.stars) S.stars = {};                         // 每关最佳星星
+if (!S.best)  S.best = {};                          // 每关最佳正确率
+if (!S.done)  S.done = {};                          // 每关是否通关
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+
+/* 关卡难度 → 限时 */
+function limitOf(i){
+  var d = LEVELS[i].diff;
+  return d==='入门' ? LIMIT_EASY : (d==='高级'||d==='冲刺' ? LIMIT_HARD : LIMIT_MID);
+}
+
+/* 按题库顺序给每关分组 */
+var MODQ = {};   // name -> [题...]
+var MODORDER = [];
+window.__BANK.forEach(function(q){
+  if (!MODQ[q.m]){ MODQ[q.m] = []; MODORDER.push(q.m); }
+  MODQ[q.m].push(q);
+});
+
+/* ================= 渲染关卡地图 ================= */
+function renderMap(){
+  var map = document.getElementById('map');
+  var html = '';
+  TRACKS.forEach(function(tk){
+    var doneN = 0;
+    for (var i=tk.range[0]; i<tk.range[1]; i++){ if (S.done[i]) doneN++; }
+    var total = tk.range[1]-tk.range[0];
+    html += '<section><div class="sec-h"><h2>' + esc(tk.name) + '</h2>' +
+      '<span class="tag ' + tk.tagCls + '">' + (tk.key==='net'?'数通 · DCN · 安全 · WLAN':(tk.key==='sw'?'openEuler · openGauss · 鲲鹏':'综合')) + '</span>' +
+      '<span class="line"></span><span class="done-n">' + doneN + ' / ' + total + ' 关</span></div>' +
+      '<div class="levels">';
+    for (var i=tk.range[0]; i<tk.range[1]; i++){
+      html += levelCard(i);
+    }
+    html += '</div></section>';
+  });
+  map.innerHTML = html;
+  Array.prototype.forEach.call(map.querySelectorAll('.lv[data-i]'), function(el){
+    el.addEventListener('click', function(){ openLevel(+el.getAttribute('data-i')); });
+  });
+}
+
+function levelCard(i){
+  var L = LEVELS[i], n = (MODQ[L.name]||[]).length;
+  var locked = (i+1) > S.unlocked;
+  var done = !!S.done[i];
+  var stars = S.stars[i] || 0, best = S.best[i];
+  var cls = locked ? 'lv locked' : (done ? 'lv done' : 'lv open');
+  var starHtml = '';
+  for (var s=1;s<=3;s++){ starHtml += '<span class="' + (s<=stars?'on':'') + '">★</span>'; }
+  var cta = locked ? '🔒 未解锁' : (done ? '↻ 再闯一次' : '▶ 开始挑战');
+  return '<div class="' + cls + '" data-i="' + i + '">' +
+    '<div class="lv-top"><div class="lv-ico">' + L.icon + '</div>' +
+    '<div><div class="lv-num">第 ' + (i+1) + ' 关</div><p class="lv-name">' + esc(L.name) + '</p></div></div>' +
+    '<div class="lv-meta"><span class="' + L.diffCls + '">' + L.diff + '</span><span>' + n + ' 题</span></div>' +
+    '<div class="lv-foot"><div class="lv-stars">' + starHtml + '</div>' +
+    (best ? '<span class="lv-best">最佳 ' + best + '%</span>' : '') +
+    '<span class="lv-cta">' + cta + '</span></div></div>';
+}
+
+/* ================= 挑战引擎 ================= */
+var RUN = { level:-1, qs:[], idx:0, ok:0, streak:0, best:0, remain:0, limit:0, timer:null, answered:false, multiSel:[] };
+
+function openLevel(i){
+  if ((i+1) > S.unlocked) return;
+  var L = LEVELS[i], qs = MODQ[L.name] || [];
+  if (!qs.length) return;
+  RUN.level = i; RUN.qs = shuffle(qs); RUN.idx = 0; RUN.ok = 0; RUN.streak = 0; RUN.best = 0;
+  RUN.limit = limitOf(i); RUN.answered = false; RUN.multiSel = [];
+  document.getElementById('overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+  renderQ();
+}
+
+function closeOverlay(){
+  stopTimer();
+  document.getElementById('overlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+function stopTimer(){ if (RUN.timer){ clearInterval(RUN.timer); RUN.timer = null; } }
+
+function curQ(){ return RUN.qs[RUN.idx]; }
+
+function typeLabel(t){ return t==='单选' ? ['s','单选'] : (t==='多选' ? ['m','多选'] : ['j','判断']); }
+
+function renderQ(){
+  var q = curQ(), L = LEVELS[RUN.level];
+  var tl = typeLabel(q.t);
+  RUN.answered = false; RUN.multiSel = [];
+  RUN.remain = RUN.limit;
+  var total = RUN.qs.length;
+  var panel = document.getElementById('qpanel');
+  var opts = '';
+  var multi = q.t === '多选';
+  q.o.forEach(function(o, oi){
+    opts += '<button class="opt" data-oi="' + oi + '"><span class="k">' + String.fromCharCode(65+oi) + '</span><span>' + esc(o) + '</span></button>';
+  });
+  panel.innerHTML =
+    '<div class="qhead"><div class="lv-ico">' + L.icon + '</div>' +
+    '<div class="t"><b>' + esc(L.name) + '</b><span>第 ' + (RUN.idx+1) + ' / ' + total + ' 题</span></div>' +
+    '<button class="x" id="q-close">✕</button></div>' +
+    '<div class="qbar"><span>答对 <b>' + RUN.ok + '</b></span><span class="bar"><i style="width:' + (RUN.idx/total*100) + '%"></i></span>' +
+    '<span>🔥 ' + RUN.streak + ' 连对</span></div>' +
+    '<div class="qbody">' +
+      '<div class="qmeta"><span class="qtype ' + tl[0] + '">' + tl[1] + '</span>' +
+        '<span class="timer-wrap" id="tw"><span class="timer-ring">' +
+          '<svg width="52" height="52"><circle class="bg" cx="26" cy="26" r="22" fill="none" stroke-width="5"></circle>' +
+          '<circle class="fg" id="tfg" cx="26" cy="26" r="22" fill="none" stroke-width="5" stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="0"></circle></svg>' +
+          '<span class="num" id="tnum">' + RUN.limit + '</span></span>' +
+          '<span class="tlabel"><b>限时答题</b><span>' + (multi?'选好答案后点「提交」':'选一个答案即提交') + '</span></span></span></div>' +
+      '<p class="qtext">' + esc(q.q) + '</p>' +
+      '<div class="opts" id="opts">' + opts + '</div>' +
+      '<div class="fb" id="fb"></div>' +
+      '<div class="qfoot"><span class="streak" id="streak"></span>' +
+        (multi ? '<button class="btn btn-pri" id="multi-submit">提交</button>' : '') +
+      '</div>' +
+    '</div>';
+
+  panel.querySelector('#q-close').addEventListener('click', closeOverlay);
+  var optEls = panel.querySelectorAll('.opt');
+  Array.prototype.forEach.call(optEls, function(el){
+    el.addEventListener('click', function(){
+      var oi = +el.getAttribute('data-oi');
+      if (multi){
+        var idx = RUN.multiSel.indexOf(oi);
+        if (idx >= 0){ RUN.multiSel.splice(idx,1); el.classList.remove('sel'); }
+        else { RUN.multiSel.push(oi); el.classList.add('sel'); }
+      } else {
+        choose(oi);
+      }
+    });
+  });
+  var ms = panel.querySelector('#multi-submit');
+  if (ms) ms.addEventListener('click', function(){ if (!RUN.multiSel.length) return; choose(RUN.multiSel); });
+
+  startTimer();
+  drawRing(RUN.limit, RUN.limit);
+}
+
+function drawRing(remain, limit){
+  var tfg = document.getElementById('tfg'), tnum = document.getElementById('tnum'), tw = document.getElementById('tw');
+  if (!tfg) return;
+  var C = 2 * Math.PI * 22;
+  var frac = Math.max(0, remain / limit);
+  tfg.style.strokeDasharray = C;
+  tfg.style.strokeDashoffset = C * (1 - frac);
+  tnum.textContent = remain;
+  if (tw){ if (remain <= 10) tw.classList.add('warn'); else tw.classList.remove('warn'); }
+}
+
+function startTimer(){
+  stopTimer();
+  RUN.timer = setInterval(function(){
+    RUN.remain--;
+    drawRing(RUN.remain, RUN.limit);
+    if (RUN.remain <= 0){
+      stopTimer();
+      if (!RUN.answered){ /* 超时判错 */
+        RUN.answered = true;
+        var q = curQ();
+        feedback(false, q, '⏰ 时间到');
+      }
+    }
+  }, 1000);
+}
+
+var SAY_OK = ['漂亮！','对！','稳！','就这么打！','精准命中！','好样的！'];
+var SAY_BAD = ['没关系，解析记牢','这题有坑，记住','错一次 = 多记一遍','别慌，下一题扳回来'];
+function sayHot(n){ return ['🔥 ' + n + ' 连对！火力全开','🔥 连对 ' + n + '，状态拉满','🔥 手起刀落，' + n + ' 连斩'][n%3]; }
+
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function choose(sel){
+  if (RUN.answered) return;
+  RUN.answered = true;
+  stopTimer();
+  var q = curQ();
+  var selArr = Array.isArray(sel) ? sel : [sel];
+  var correct = q.a.slice().sort().join(',') === selArr.slice().sort().join(',');
+  if (correct){
+    RUN.ok++; RUN.streak++;
+    if (RUN.streak > RUN.best) RUN.best = RUN.streak;
+  } else {
+    RUN.streak = 0;
+  }
+  feedback(correct, q);
+}
+
+function feedback(ok, q, overText){
+  var fb = document.getElementById('fb');
+  var opts = document.querySelectorAll('#opts .opt');
+  Array.prototype.forEach.call(opts, function(el){
+    el.disabled = true;
+    var oi = +el.getAttribute('data-oi');
+    if (q.a.indexOf(oi) >= 0) el.classList.add('ok');
+    else if ((ok===false) && (Array.isArray(RUN.multiSel)?RUN.multiSel:[].concat(overText?'x':[])).length && el.classList.contains('sel')) el.classList.add('no');
+  });
+  // 超时/答错时标出选错的
+  if (!ok){
+    Array.prototype.forEach.call(opts, function(el){
+      if (el.classList.contains('sel') && q.a.indexOf(+el.getAttribute('data-oi')) < 0) el.classList.add('no');
+    });
+  }
+  var streakEl = document.getElementById('streak');
+  if (ok){
+    fb.className = 'fb show good';
+    fb.innerHTML = '<span class="say g">' + (RUN.streak >= 3 ? sayHot(RUN.streak) : pick(SAY_OK)) + '</span>' +
+      '<span class="exp"><b>✓ 正确</b>' + (q.e ? ' · ' + esc(q.e) : '') + '</span>';
+    if (streakEl) streakEl.textContent = RUN.streak >= 2 ? '🔥 ' + RUN.streak + ' 连对' : '';
+    burst(12);
+  } else {
+    fb.className = 'fb show bad';
+    var ans = q.a.map(function(i){ return String.fromCharCode(65+i) + '·' + q.o[i]; }).join('　');
+    fb.innerHTML = '<span class="say b">' + (overText || pick(SAY_BAD)) + '</span>' +
+      '<span class="exp"><b>正确答案：' + esc(ans) + '</b>' + (q.e ? '<br>' + esc(q.e) : '') + '</span>';
+    if (streakEl) streakEl.textContent = '';
+  }
+  var qf = document.querySelector('.qfoot');
+  var btn = document.createElement('button');
+  btn.className = 'btn btn-pri';
+  btn.textContent = (RUN.idx + 1 >= RUN.qs.length) ? '查看成绩' : '下一题';
+  btn.addEventListener('click', function(){
+    if (RUN.idx + 1 >= RUN.qs.length) finishLevel(); else { RUN.idx++; renderQ(); }
+  });
+  qf.appendChild(btn);
+}
+
+/* ================= 结算 ================= */
+function finishLevel(){
+  stopTimer();
+  var L = LEVELS[RUN.level], total = RUN.qs.length;
+  var pct = Math.round(RUN.ok / total * 100);
+  var stars = pct >= 90 ? 3 : (pct >= 70 ? 2 : (pct >= 50 ? 1 : 0));
+  var prevBest = S.best[RUN.level];
+  var isNewBest = prevBest === undefined || pct > prevBest;
+  // 记录通关 + 最佳
+  if (pct >= 50) S.done[RUN.level] = true;
+  if (isNewBest){ S.best[RUN.level] = pct; S.stars[RUN.level] = stars; }
+  // 解锁下一关
+  if (S.done[RUN.level] && (RUN.level+1) < LEVELS.length && S.unlocked < RUN.level+2){
+    S.unlocked = RUN.level + 2;
+  }
+  save();
+
+  var say = pct >= 90 ? '🏆 满分通关！这关你已经是天花板了'
+    : (pct >= 70 ? '🎉 干得漂亮，稳稳拿下'
+    : (pct >= 50 ? '👍 过关就是赢，回看解析能更稳'
+    : '💪 差一点，再看一遍解析，再来一次'));
+  if (RUN.level+1 === 3) say += ' · 已出新手村！';
+  else if (RUN.level+1 === 7) say += ' · 网络赛道过半！';
+  else if (RUN.level+1 === 10) say += ' · 进入基础软件赛道！';
+  else if (RUN.level+1 === 13) say += ' · 就剩最后一关！';
+
+  var panel = document.getElementById('qpanel');
+  var starHtml = '';
+  for (var s=1;s<=3;s++){ starHtml += '<span class="' + (s<=stars?'on':'off') + '">★</span>'; }
+  panel.innerHTML =
+    '<div class="result"><div class="trophy">' + (stars===3?'🏆':(stars===2?'🎖':'🎯')) + '</div>' +
+    '<h3>' + esc(L.name) + ' · 通关</h3>' +
+    '<div class="stars">' + starHtml + '</div>' +
+    '<div class="kv">' +
+      '<span>答对<b>' + RUN.ok + ' / ' + total + '</b></span>' +
+      '<span>正确率<b>' + pct + '%</b></span>' +
+      '<span>最高连对<b>' + RUN.best + '</b></span>' +
+    '</div>' +
+    (isNewBest && prevBest!==undefined ? '<div class="badge-unlock">📈 刷新最佳纪录：' + prevBest + '% → ' + pct + '%</div>' : '') +
+    '<div class="badge-unlock">🎖 点亮徽章：' + L.icon + ' ' + esc(L.name) + '</div>' +
+    '<p class="say">' + say + '</p>' +
+    '<div class="actions">' +
+      '<button class="btn btn-pri" id="r-retry">↻ 再闯一次</button>' +
+      '<button class="btn btn-ghost" id="r-next">下一关</button>' +
+      '<button class="btn btn-ghost" id="r-map">回到地图</button>' +
+    '</div></div>';
+
+  panel.querySelector('#r-retry').addEventListener('click', function(){ openLevel(RUN.level); });
+  var nxt = panel.querySelector('#r-next');
+  if ((RUN.level+1) >= LEVELS.length){ nxt.style.display='none'; }
+  else nxt.addEventListener('click', function(){ openLevel(RUN.level+1); });
+  panel.querySelector('#r-map').addEventListener('click', function(){ closeOverlay(); renderMap(); renderProg(); });
+
+  // 特效：按星星放礼炮彩带
+  if (stars >= 2) confetti(stars === 3 ? 1.0 : 0.6);
+  else burst(40);
+
+  renderMap(); renderProg(); renderBadges();
+}
+
+/* ================= 特效 ================= */
+function burst(n){
+  /* 单题答对的轻量粒子（纯 DOM 彩点） */
+  try {
+    var host = document.getElementById('qpanel');
+    if (!host) return;
+    for (var i=0;i<n;i++){
+      var s = document.createElement('i');
+      s.style.cssText = 'position:fixed;z-index:99;pointer-events:none;width:8px;height:8px;border-radius:50%;' +
+        'left:' + (Math.random()*100) + 'vw;top:40vh;background:' + ['#f5c518','#2ee6a8','#3b82f6','#ff5a52','#a78bfa'][i%5] + ';' +
+        'animation:pop .5s ease forwards';
+      document.body.appendChild(s);
+      (function(el){ setTimeout(function(){ el.remove(); }, 600); })(s);
+    }
+  } catch(e){}
+}
+
+var confettiOn = false;
+function confetti(power){
+  var cv = document.getElementById('confetti');
+  var ctx = cv.getContext('2d');
+  var W = cv.width = window.innerWidth, H = cv.height = window.innerHeight;
+  var colors = ['#f5c518','#2ee6a8','#3b82f6','#ff5a52','#a78bfa','#ff9d2e'];
+  var parts = [];
+  var count = Math.round(160 * (power || 0.6));
+  for (var i=0;i<count;i++){
+    parts.push({ x:Math.random()*W, y:-20-Math.random()*H*0.4, w:6+Math.random()*6, h:8+Math.random()*8,
+      c:colors[i%colors.length], vy:2.2+Math.random()*3.2, vx:(Math.random()-0.5)*2.4, r:Math.random()*Math.PI, vr:(Math.random()-0.5)*0.3 });
+  }
+  if (confettiOn) return;
+  confettiOn = true;
+  var t0 = Date.now();
+  (function tick(){
+    ctx.clearRect(0,0,W,H);
+    var alive = false;
+    parts.forEach(function(p){
+      p.x += p.vx; p.y += p.vy; p.r += p.vr; p.vy += 0.02;
+      if (p.y < H + 30) alive = true;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+      ctx.fillStyle = p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+    });
+    if (alive && Date.now()-t0 < 4200) requestAnimationFrame(tick);
+    else { ctx.clearRect(0,0,W,H); confettiOn = false; }
+  })();
+}
+
+/* ================= 徽章墙 / 进度 ================= */
+function renderBadges(){
+  var g = document.getElementById('bgrid');
+  g.innerHTML = LEVELS.map(function(L, i){
+    var done = !!S.done[i], locked = (i+1) > S.unlocked;
+    return '<div class="b ' + (done?'on':'') + ' ' + (locked?'locked':'') + '"><span class="ic">' + L.icon + '</span>' +
+      '<span class="n">' + esc(L.name) + '</span><span class="s">' + (done ? '★'.repeat(S.stars[i]||1) + ' ' + (S.best[i]||'') + '%' : (locked?'🔒 未解锁':'未通关')) + '</span></div>';
+  }).join('');
+  var grand = document.getElementById('grand');
+  var allDone = LEVELS.every(function(L,i){ return !!S.done[i]; });
+  grand.style.display = allDone ? 'block' : 'none';
+}
+
+function renderProg(){
+  var done = 0; LEVELS.forEach(function(L,i){ if (S.done[i]) done++; });
+  document.getElementById('prog-done').textContent = done;
+  document.getElementById('prog-bar').style.width = (done/LEVELS.length*100) + '%';
+}
+
+/* ================= 启动 ================= */
+document.getElementById('btn-badges').addEventListener('click', function(){
+  renderBadges(); document.getElementById('badges-mask').classList.add('on');
+});
+document.getElementById('btn-badges-close').addEventListener('click', function(){
+  document.getElementById('badges-mask').classList.remove('on');
+});
+document.getElementById('badges-mask').addEventListener('click', function(e){ if (e.target === this) this.classList.remove('on'); });
+document.getElementById('overlay').addEventListener('click', function(e){ if (e.target === this) closeOverlay(); });
+
+renderMap();
+renderProg();
+renderBadges();
+
+/* 测试/调试只读钩子 */
+window.__GATE = { curQ: curQ, getState: function(){ return S; }, getRun: function(){ return RUN; } };
+</script>
+</body>
+</html>

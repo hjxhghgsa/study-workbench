@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<!-- local runtime script disabled -->
+<!-- local runtime script disabled -->
+<meta charset="UTF-8">
+<meta content="width=device-width,initial-scale=1" name="viewport">
+<title>华为ICT大赛备赛工作台 · 2026-2027</title>
+<style>
+  :root{--bg:#0a0f1a; --panel:#111c30; --panel2:#15223a; --ink:#dbe7f5; --ink2:#8fa3bf; --ink3:#6b7c96; --line:#1e2f4d; --brand:#2ee6a8; --brand2:#5aa7ff; --ok:#2ee6a8; --warn:#ffc555; --bad:#ff6b7a; --chip:#15223a; --code:#0b1017; --codeink:#d9e2ec; --shadow:0 1px 2px rgba(0,0,0,.35),0 10px 28px -14px rgba(0,0,0,.7); --r:14px;}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+    font:15px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px 90px}
+  .top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);
+    backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--line)}
+  .top .in{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800}
+  .logo i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--brand),#7df5cd);
+    display:grid;place-items:center;color:#08131f;font-style:normal;font-size:13px;font-weight:900}
+  .navlinks{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .navlinks a{text-decoration:none;color:var(--ink2);font-size:13.5px;font-weight:600;padding:6px 11px;border-radius:9px}
+  .navlinks a:hover{background:var(--chip);color:var(--ink)}
+  .navlinks a.on{background:var(--ink);color:var(--bg)}
+  /* hero */
+  .hero{padding:40px 0 6px}
+  .kicker{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--brand);
+    background:color-mix(in srgb,var(--brand) 10%,transparent);padding:5px 11px;border-radius:99px}
+  h1{font-size:36px;line-height:1.2;margin:14px 0 10px;letter-spacing:-.9px}
+  h1 em{font-style:normal;background:linear-gradient(120deg,var(--brand),#7df5cd);-webkit-background-clip:text;
+    background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:var(--ink2);margin:0;max-width:790px;font-size:15px}
+  .cd{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 0}
+  .cdc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 16px;box-shadow:var(--shadow)}
+  .cdc b{display:block;font-size:22px;letter-spacing:-.6px;line-height:1.25}
+  .cdc span{font-size:12px;color:var(--ink3);font-weight:600}
+  .cdc.hot b{color:var(--brand)}
+  /* section */
+  section{margin-top:40px;scroll-margin-top:70px}
+  h2{font-size:20px;margin:0 0 4px;display:flex;align-items:center;gap:9px;letter-spacing:-.3px}
+  h2 .dot{width:7px;height:7px;border-radius:50%;background:var(--brand);flex:none}
+  .hint{color:var(--ink3);font-size:13.5px;margin:0 0 16px}
+  /* entries */
+  .entries{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
+  .ent{display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--r);padding:18px 18px 16px;box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s;position:relative;overflow:hidden}
+  .ent:hover{transform:translateY(-3px)}
+  .ent::before{content:'';position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,var(--brand),#7df5cd)}
+  .ent.v::before{background:linear-gradient(90deg,#5aa7ff,#8ec5ff)}
+  .ent.q::before{background:linear-gradient(90deg,#2ee6a8,#7df5cd)}
+  .ent.e::before{background:linear-gradient(90deg,#ffc555,#ffd98a)}
+  .ent .ic{font-size:22px;line-height:1;margin-bottom:10px;display:block}
+  .ent b{display:block;font-size:16.5px;margin-bottom:5px;letter-spacing:-.2px}
+  .ent p{margin:0;font-size:13.2px;color:var(--ink2);line-height:1.6}
+  .ent .go{margin-top:11px;font-size:12.5px;font-weight:800;color:var(--brand)}
+  .ent.v .go{color:var(--brand2)} .ent.q .go{color:var(--ok)} .ent.e .go{color:var(--warn)}
+  /* timeline */
+  .tl{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:8px 20px}
+  .ti{display:flex;gap:16px;padding:15px 0;border-bottom:1px dashed var(--line)}
+  .ti:last-child{border-bottom:0}
+  .ti time{flex:none;width:112px;font-size:13.5px;font-weight:800;color:var(--ink2);padding-top:1px}
+  .ti .body{flex:1}
+  .ti .body b{display:block;font-size:14.8px;margin-bottom:2px}
+  .ti .body span{font-size:13.2px;color:var(--ink3)}
+  .ti.now time{color:var(--brand)}
+  .ti.now .body b::after{content:' ← 现在在这';font-size:12px;font-weight:800;color:var(--brand)}
+  .ti.past{opacity:.52}
+  /* rules */
+  .rules{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:12px}
+  .rule{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;box-shadow:var(--shadow)}
+  .rule b{display:block;font-size:14px;margin-bottom:6px}
+  .rule p{margin:0;font-size:13.2px;color:var(--ink2)}
+  .rule.hot{border-color:color-mix(in srgb,var(--brand) 35%,var(--line))}
+  /* syllabus */
+  .syl{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .syc{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+  .syc-h{padding:14px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+  .syc-h b{font-size:15.5px}
+  .syc-h .tg{font-size:11.5px;font-weight:800;color:#08131f;background:var(--brand);padding:2.5px 9px;border-radius:6px}
+  .syc-h .tg.b{background:var(--ok)}
+  .syc-b{padding:6px 17px 16px}
+  .blk{padding:11px 0;border-bottom:1px dashed var(--line)}
+  .blk:last-child{border-bottom:0}
+  .blk b{display:block;font-size:13.8px;margin-bottom:4px}
+  .blk b i{font-style:normal;color:var(--ink3);font-size:12px;font-weight:600;margin-left:6px}
+  .blk p{margin:0;font-size:12.9px;color:var(--ink2);line-height:1.65}
+  /* roadmap */
+  .road{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:13px}
+  .st{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:17px;box-shadow:var(--shadow);position:relative}
+  .st .ph{font-size:11.5px;font-weight:800;letter-spacing:.5px;color:var(--brand);margin-bottom:7px}
+  .st b{display:block;font-size:15.5px;margin-bottom:9px}
+  .st ul{margin:0;padding-left:18px;font-size:13.2px;color:var(--ink2)}
+  .st li{margin:4px 0}
+  /* res */
+  .resgrp{margin-bottom:18px}
+  .resgrp h3{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink3);margin:0 0 9px}
+  .res{display:grid;grid-template-columns:repeat(auto-fill,minmax(252px,1fr));gap:10px}
+  .res a{display:flex;gap:10px;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);
+    border-radius:11px;padding:12px 14px;box-shadow:var(--shadow);transition:.16s}
+  .res a:hover{border-color:var(--ink3);transform:translateY(-1px)}
+  .res .rk{flex:none;font-size:16px;line-height:1.35}
+  .res b{display:block;font-size:13.8px;margin-bottom:1px}
+  .res span{font-size:12.2px;color:var(--ink3);line-height:1.5}
+  .note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:10px;
+    padding:14px 17px;font-size:13.6px;color:var(--ink2);margin-top:16px}
+  .note b{color:var(--ink)}
+  footer{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink3);font-size:12.5px}
+  @media(max-width:760px){ .syl{grid-template-columns:1fr} }
+  @media(max-width:640px){ h1{font-size:26px} .wrap{padding:0 14px 70px} .ti time{width:88px;font-size:12.5px} }
+  :root{color-scheme:dark}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#22314e;border-radius:99px}
+  ::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="top">
+  <div class="hero">
+    <span class="kicker">● 第十一届华为ICT大赛 · 2026-2027 赛季</span>
+    <h1>备赛工作台<br><em>网络赛道 + 基础软件赛道</em></h1>
+    <p class="sub">
+      一个页面装下备赛要用的全部东西：考纲拆解、路径规划、官方入口、讲课视频、成套题库、能做的手把手实验。
+      点开就能用，不用再去别处找。
+    </p>
+    <div class="cd" id="cd"></div>
+  </div>
+
+  <!-- 板块入口 -->
+  <section>
+    <h2><span class="dot"></span>板块入口</h2>
+    <p class="hint">四个板块，按「先环境 → 再理论 → 边刷题 → 边做实验」的顺序用。</p>
+    <div class="entries">
+      <a class="ent" data-nav="index" href="#" id="e-over">
+        <span class="ic">🧭</span><b>备赛总览</b>
+        <p>你现在看的这页：赛程节点、赛制规则、考纲得分点、备赛路线与全部资源入口。</p>
+        <div class="go">当前页面</div>
+      </a>
+      <a class="ent v" data-nav="videos" href="https://workbuddy.link/p/WFMV47uv9q1ZcBh3MSObKz" rel="noopener" target="_blank">
+        <span class="ic">🎬</span><b>视频精讲</b>
+        <p>13 个知识模块的精华课，24 条已核验链接，每模块带备选。点开就能看。</p>
+        <div class="go">进入播放 →</div>
+      </a>
+      <a class="ent q" data-nav="quiz" href="https://workbuddy.link/p/ewlnOs4VumnFaJq4uT5g2h" rel="noopener" target="_blank">
+        <span class="ic">🎯</span><b>题库练习台</b>
+        <p>119 道按考纲自编的题，13 个模块。即时判分带解析，错题自动进错题本，进度存本机。</p>
+        <div class="go">开始刷题 →</div>
+      </a>
+      <a class="ent e" data-nav="labs" href="https://workbuddy.link/p/bhcfvWwEd8tA6jm4yZZDnl" rel="noopener" target="_blank">
+        <span class="ic">🛠️</span><b>实验实操手册</b>
+        <p>22 个必做实验：网络赛道 14 个（eNSP）+ 基础软件赛道 8 个。命令可直接复制。</p>
+        <div class="go">去做实验 →</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 时间轴 -->
+  <section>
+    <h2><span class="dot"></span>赛程节点 · 别错过</h2>
+    <p class="hint">以下为第十一届实践赛中国区安排，各省组委会可能微调，以官网与你所在省份通知为准。</p>
+    <div class="tl" id="tl"></div>
+    <div class="note">
+      <b>三个最容易踩的坑：</b>① 每名选手<b>只能报一个赛道</b>，实践赛的各个赛项之间也互斥 —— 选了网络赛道就不能再报创新赛、编程赛；
+      ② 报名后<b>不能更换队员和指导教师</b>，组队前想清楚；
+      ③ 省赛资格赛的<b>实验环节是线上进行的</b>，需要自备带摄像头的电脑，提前把 eNSP 装好调通，别到考场上再折腾环境。
+    </div>
+  </section>
+
+  <!-- 规则 -->
+  <section>
+    <h2><span class="dot"></span>赛制速览</h2>
+    <p class="hint">先搞清规则，再谈复习。规则用错，努力白费。</p>
+    <div class="rules">
+      <div class="rule hot"><b>赛制层级</b><p>省资格赛 → 省赛 → 全国总决赛 → 全球总决赛。省赛及之前的校赛以<b>理论</b>为主，国赛和全球赛是<b>8 小时综合实验</b>。</p></div>
+      <div class="rule hot"><b>组队方式</b><p>团队赛，每队 <b>3 名学生 + 1 名指导教师</b>，必须来自同一所高校。不设报名费。</p></div>
+      <div class="rule"><b>考核形式</b><p>理论 + 上机实验，按总分排名。国赛实验环境：网络赛道用 <b>eNSP</b>，云与基础软件用华为云等平台。</p></div>
+      <div class="rule"><b>难度梯度</b><p>省赛初赛≈HCIA，省赛复赛≈HCIP，国赛≈HCIE 水平。按这个梯度安排复习深度最省力。</p></div>
+      <div class="rule"><b>晋级规则</b><p>校赛结束后各赛道前 50% 晋级省初赛；省初赛各组别前 10% 晋级省复赛；晋级国赛的成绩一般不得低于总分的 60%。</p></div>
+      <div class="rule"><b>报名入口</b><p>统一在华为人才在线的大赛官网完成，报名窗口为 2026 年 8 月 31 日 — 10 月 31 日。</p></div>
+    </div>
+  </section>
+
+  <!-- 考纲 -->
+  <section>
+    <h2><span class="dot"></span>考纲拆解 · 拆成得分点</h2>
+    <p class="hint">下面是官方考核范围，「权重」标注的是历年出题密度，按热度安排时间性价比最高。</p>
+    <div class="syl">
+      <div class="syc">
+        <div class="syc-h"><span class="tg">网络赛道</span><b>数通 · DCN · 安全 · WLAN</b></div>
+        <div class="syc-b">
+          <div class="blk"><b>路由协议<i>高频</i></b><p>OSPF（邻居/DR/LSA/区域/汇总/认证）、BGP（选路属性/反射器/路由控制）、IS-IS、静态与浮动路由。</p></div>
+          <div class="blk"><b>二层交换<i>高频</i></b><p>VLAN 与 Trunk/Hybrid、STP/RSTP/MSTP、链路聚合、堆叠与集群、端口隔离、DHCP Snooping。</p></div>
+          <div class="blk"><b>IPv6<i>中频</i></b><p>地址类型与编址、NDP、SLAAC、DHCPv6、OSPFv3、IPv6 过渡技术。</p></div>
+          <div class="blk"><b>数据中心网络 DCN<i>高频</i></b><p>VXLAN 封装与 VNI、VTEP/NVE、BGP EVPN（Type1-5 路由）、分布式网关。</p></div>
+          <div class="blk"><b>网络安全<i>高频</i></b><p>防火墙安全区域与安全策略、会话表、ASPF、NAT（源/目的/NAT Server）、双机热备（VGMP/HRP）、IPS 与攻击防范。</p></div>
+          <div class="blk"><b>VPN 技术<i>中频</i></b><p>IPsec（IKE 两阶段、AH/ESP、隧道与传输模式）、GRE、L2TP、SSL VPN。</p></div>
+          <div class="blk"><b>WLAN<i>中频</i></b><p>CAPWAP、AC/AP 组网（直连/旁挂、二层/三层）、转发方式、AP 上线流程、WLAN 安全。</p></div>
+        </div>
+      </div>
+      <div class="syc">
+        <div class="syc-h"><span class="tg b">基础软件赛道</span><b>openEuler · openGauss · Kunpeng</b></div>
+        <div class="syc-b">
+          <div class="blk"><b>openEuler 操作系统<i>高频</i></b><p>发展史与生态、基础操作命令、文件系统、内存管理、进程管理、用户与权限、软件包管理（dnf/rpm）、systemd 服务管理、网络配置。</p></div>
+          <div class="blk"><b>openGauss 数据库<i>高频</i></b><p>架构概述、安装部署（gs_preinstall/gs_install）、连接与访问（gsql）、日常使用与 SQL、用户权限体系、集群管理（gs_om）、主备与备份恢复（gs_dump/gs_basebackup）。</p></div>
+          <div class="blk"><b>openGauss 安全与运维<i>高频</i></b><p>全密态数据库、防篡改账本、密码策略、三权分立、运维监控与故障定位。</p></div>
+          <div class="blk"><b>Kunpeng 应用开发<i>中高频</i></b><p>鲲鹏体系架构（ARMv8）、应用开发与编译优化、应用迁移（源码/二进制）、性能调优（NUMA 绑定、编译选项）、鲲鹏解决方案。</p></div>
+          <div class="blk"><b>信创与国产化背景<i>基础</i></b><p>国产软硬件生态、迁移适配流程与常见问题排查，是简答题常客。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 路线 -->
+  <section>
+    <h2><span class="dot"></span>备赛路线 · 从今天到理论赛</h2>
+    <p class="hint">以省资格赛理论考试（11 月 14-15 日）为终点倒排。按周执行，别贪多。</p>
+    <div class="road">
+      <div class="st">
+        <div class="ph">第一阶段 · 现在 → 10 月上旬</div>
+        <b>打地基</b>
+        <ul>
+          <li>装好 eNSP + 虚拟化环境，做通 VLAN、静态路由两个实验</li>
+          <li>过一遍数通基础（OSI/TCP-IP/IP 编址/子网划分），这part 必须闭眼会</li>
+          <li>基础软件：装 openEuler 虚机，把常用命令练到不用查</li>
+          <li>题库按模块刷「数通基础 + 二层交换」，正确率目标 80%</li>
+        </ul>
+      </div>
+      <div class="st">
+        <div class="ph">第二阶段 · 10 月</div>
+        <b>攻核心协议</b>
+        <ul>
+          <li>OSPF 打透：邻居建立过程、DR 选举、LSA 类型、多区域与汇总</li>
+          <li>BGP 抓选路：属性优先级 + 路由反射器，至少做通一次选路实验</li>
+          <li>基础软件：openGauss 完整装一遍，练主备切换与备份恢复</li>
+          <li>题库重点刷「路由 OSPF / 路由 BGP / openGauss」，错题反复过</li>
+        </ul>
+      </div>
+      <div class="st">
+        <div class="ph">第三阶段 · 11 月</div>
+        <b>补短板 + 拔高</b>
+        <ul>
+          <li>DCN（VXLAN/BGP EVPN）与安全（防火墙双机、IPsec）这两个高权重模块</li>
+          <li>WLAN、IPv6 收尾，做题为主</li>
+          <li>按 8 小时综合实验的规模串一次全流程拓扑（网络赛道）</li>
+          <li>题库切「错题本」模式，直到错题清空</li>
+        </ul>
+      </div>
+      <div class="st">
+        <div class="ph">考前一周</div>
+        <b>稳住</b>
+        <ul>
+          <li>不碰新知识点，只回顾错题本与命令速查</li>
+          <li>确认实验环境可用：eNSP 能起设备、虚机能登录、网络通畅</li>
+          <li>理论考试是线上，提前测试摄像头与网络</li>
+          <li>睡够。这考试拼的是熟练度，不是临时记忆</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 资源 -->
+  <section>
+    <h2><span class="dot"></span>资源总表 · 全部可直接点开</h2>
+    <p class="hint">官方源优先。所有链接在收录时都实测可达。</p>
+
+    <div class="resgrp">
+      <h3>赛事官方</h3>
+      <div class="res">
+        <a href="https://e.huawei.com/cn/talent/ict-academy/#/ict-contest?compId=85132018" rel="noopener" target="_blank">
+          <span class="rk">🏆</span><span><b>华为ICT大赛官网</b><span>赛制、赛道、报名与最新通知的唯一权威来源</span></span></a>
+        <a href="https://e.huawei.com/cn/talent/ict-academy/" rel="noopener" target="_blank">
+          <span class="rk">🎓</span><span><b>华为人才在线</b><span>ICT 学院与认证学习平台，官方课程与考试大纲</span></span></a>
+        <a href="https://e.huawei.com/cn/talent/" rel="noopener" target="_blank">
+          <span class="rk">📘</span><span><b>华为培训与认证</b><span>HCIA / HCIP / HCIE 目录与学习资源入口</span></span></a>
+      </div>
+    </div>
+
+    <div class="resgrp">
+      <h3>环境与工具</h3>
+      <div class="res">
+        <a href="https://support.huawei.com/enterprise/zh/tool/ensp" rel="noopener" target="_blank">
+          <span class="rk">🧰</span><span><b>eNSP 下载（官方）</b><span>网络赛道实验的必备模拟器，需注册华为账号</span></span></a>
+        <a href="https://support.huawei.com/enterprise/zh/training-and-certification-service/ensp-pro-pid-260215817/software" rel="noopener" target="_blank">
+          <span class="rk">🧪</span><span><b>eNSP Pro</b><span>官方新版模拟器（权限受限，视账号等级可用）</span></span></a>
+        <a href="https://www.wireshark.org/download.html" rel="noopener" target="_blank">
+          <span class="rk">🦈</span><span><b>Wireshark</b><span>抓包看协议交互，学 OSPF/BGP/CAPWAP 最快的方式</span></span></a>
+      </div>
+    </div>
+
+    <div class="resgrp">
+      <h3>基础软件赛道 · 官方文档</h3>
+      <div class="res">
+        <a href="https://www.openeuler.org/zh/" rel="noopener" target="_blank">
+          <span class="rk">🐧</span><span><b>openEuler 社区</b><span>国产开源操作系统官网与最新版本动态</span></span></a>
+        <a href="https://www.openeuler.org/zh/download/" rel="noopener" target="_blank">
+          <span class="rk">💿</span><span><b>openEuler 镜像下载</b><span>装虚机用，建议 22.03 LTS 或 24.03 LTS</span></span></a>
+        <a href="https://docs.openeuler.org/zh/" rel="noopener" target="_blank">
+          <span class="rk">📗</span><span><b>openEuler 官方文档</b><span>命令、文件系统、内存与进程管理权威参考</span></span></a>
+        <a href="https://opengauss.org/zh/" rel="noopener" target="_blank">
+          <span class="rk">🗄️</span><span><b>openGauss 社区</b><span>企业级开源数据库官网</span></span></a>
+        <a href="https://docs.opengauss.org/zh/" rel="noopener" target="_blank">
+          <span class="rk">📕</span><span><b>openGauss 官方文档</b><span>安装部署、SQL 参考、集群管理与运维</span></span></a>
+        <a href="https://gitee.com/opengauss" rel="noopener" target="_blank">
+          <span class="rk">🐙</span><span><b>openGauss 代码仓</b><span>源码、Issue 与社区工具</span></span></a>
+      </div>
+    </div>
+
+    <div class="resgrp">
+      <h3>鲲鹏 / 信创</h3>
+      <div class="res">
+        <a href="https://www.hikunpeng.com/" rel="noopener" target="_blank">
+          <span class="rk">⚙️</span><span><b>鲲鹏社区</b><span>体系架构、应用迁移与性能优化资料</span></span></a>
+        <a href="https://www.hikunpeng.com/developer/devboard" rel="noopener" target="_blank">
+          <span class="rk">🔌</span><span><b>鲲鹏开发板开发指南</b><span>OrangePi Kunpeng Pro 等开发板上手文档</span></span></a>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>关于视频与题库的两点说明：</b>视频页里的 B 站课程全部逐条核验过「未下架 + 免费」；若某条日后失效，卡片上有「备选」和 ↗ 可以直接换。
+      平台若限制第三方播放器内嵌，点播放会直接带你去 B 站对应课时，不会出现空白框。
+      题库里的 119 道题是我按第十一届考纲范围自己出的（不是网上抄的真题），用来查漏补缺和建立知识框架，
+      最终还是要以官方大纲和华为认证教材为准。
+    </div>
+  </section>
+
+  <footer>
+    本工作台为个人备赛整理，非官方发布物。赛事时间、规则与考核范围若与官方不一致，一律以华为ICT大赛官网为准。
+  </footer>
+</div>
+
+<script>
+/* 板块索引：写进 localStorage，供其余页面的顶部导航精确跳转 */
+window.__HUB__ = {
+  index:  'https://workbuddy.link/p/4pxEI2Pj2vAgMbhDGBihkM',
+  videos: 'https://workbuddy.link/p/WFMV47uv9q1ZcBh3MSObKz',
+  quiz:   'https://workbuddy.link/p/ewlnOs4VumnFaJq4uT5g2h',
+  labs:   'https://workbuddy.link/p/bhcfvWwEd8tA6jm4yZZDnl'
+};
+try { localStorage.setItem('ict_hub', JSON.stringify(window.__HUB__)); } catch (e) {}
+
+(function(){
+  /* ---- 倒计时 ---- */
+  var TODAY = new Date(); TODAY.setHours(0,0,0,0);
+  function days(d){ return Math.round((new Date(d + 'T00:00:00') - TODAY) / 86400000); }
+  var items = [
+    {d:'2026-08-31', label:'实践赛报名开始', hot:false, kind:'past'},
+    {d:'2026-09-18', label:'省资格赛 · 实验窗口开启', hot:true,  kind:'now'},
+    {d:'2026-10-31', label:'实践赛报名截止', hot:true},
+    {d:'2026-11-08', label:'省资格赛 · 实验窗口关闭', hot:false},
+    {d:'2026-11-14', label:'省资格赛 · 理论考试', hot:true},
+    {d:'2026-12-01', label:'省赛', hot:false},
+    {d:'2027-03-01', label:'全国总决赛', hot:false},
+    {d:'2027-05-01', label:'全球总决赛', hot:false}
+  ];
+  var cd = document.getElementById('cd');
+  [items[3], items[4], items[1]].forEach(function(it){
+    var n = days(it.d);
+    var txt = n > 0 ? ('D-' + n) : (n === 0 ? '今天' : '已开始');
+    var c = document.createElement('div');
+    c.className = 'cdc' + (it.hot ? ' hot' : '');
+    c.innerHTML = '<b>' + txt + '</b><span>' + it.label + '</span>';
+    cd.appendChild(c);
+  });
+
+  /* ---- 时间轴 ---- */
+  var tl = document.getElementById('tl');
+  items.forEach(function(it){
+    var n = days(it.d);
+    var cls = n < 0 ? 'ti past' : (it.kind === 'now' ? 'ti now' : 'ti');
+    var rel = n > 0 ? ('还有 ' + n + ' 天') : (n === 0 ? '就是今天' : ('已过 ' + Math.abs(n) + ' 天'));
+    var row = document.createElement('div');
+    row.className = cls;
+    row.innerHTML = '<time>' + it.d + '</time>' +
+      '<div class="body"><b>' + it.label + '</b><span>' + rel + '</span></div>';
+    tl.appendChild(row);
+  });
+
+  /* ---- 导航 ---- */
+  document.querySelectorAll('[data-nav]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var k = a.getAttribute('data-nav');
+      if (k === 'index'){ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); return; }
+      var hub = window.__HUB__ && window.__HUB__[k];
+      if (hub){ e.preventDefault(); location.href = hub; return; }
+      /* 没有父级 hub（例如被 iframe 内嵌）：不拦，交给 href 的 workbuddy.link 公开链接 */
+    });
+  });
+})();
+</script>
+</body>
+</html>
